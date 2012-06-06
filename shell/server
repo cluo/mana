@@ -1,0 +1,111 @@
+#!/bin/sh
+#
+# chkconfig: - 85 15
+# description: deploy_server(diansoft)
+# date: 2011-4-21 16.15
+
+JAVA=/usr/local/bin/java
+SERVER=/home/data/java/deploy_server
+DSOP='-server -Xmx1024m -Xms512m -Duser.region=CN -Duser.language=zh -cp . -Dosgi.configuration.area=. ServerStarter server'
+DSPID=/home/data/java/server.pid
+
+# check deploy process
+getpid() {
+    pid=`ps -C 'java' -o pid,args |grep -e "$DSOP" |awk '{ print $1 }'`
+    if test $pid
+    then
+        echo $pid > $DSPID
+        return 0
+    else
+        return 1
+    fi
+}
+
+do_status() {
+    kill -0 $1 2>/dev/null
+    if [ $? -eq 0 ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# start
+do_start() {
+    if getpid
+    then
+        dspid=`cat $DSPID`
+        echo "deploy_server is running on pid: $dspid"
+        return 1
+    else
+        #rm -rf /usr/local/diansoft/deploy_server_lan/org.eclipse.osgi
+        cd $SERVER &&
+        nohup $JAVA $DSOP >/dev/null 2>&1 &
+        echo $! > $DSPID
+        echo -n 'deploy_server is starting...'
+        sleep 2
+        echo ' done'
+        return 0
+    fi
+}
+
+do_stop() {
+    if getpid
+    then
+    {
+       dspid=`cat $DSPID`
+       kill $dspid
+       ES=$?
+       echo -n 'deploy_server is stopping.'
+    # sleep 6s,check
+    sleep 2
+       echo -n '.'
+    sleep 2
+       echo -n '.'
+    sleep 2   
+    do_status $dspid
+    if [ $? -eq 0 ]; then
+        kill -9 $dspid
+        ES=$?
+    fi
+    }
+    else
+        echo 'deploy_server is stopped'
+        exit 1
+    fi
+    return $ES
+}
+
+case "$1" in
+    start)
+        do_start
+        ;;
+    stop)
+        do_stop
+        if [ $? -eq 0 ]; then
+            rm -f $DSPID
+            echo ' done'
+        else
+            echo ' fail'
+        fi
+        ;;
+    restart)
+        do_stop && rm -f $DSPID
+        if [ $? -eq 0 ]; then
+            echo ' done' && do_start
+        fi
+        ;;
+    status)
+        if getpid
+        then
+            echo "deploy_server is running on pid: `cat $DSPID`"
+        else
+            echo "deploy_server is stopped"
+        fi
+        ;;
+    *)
+        echo "Usage: server (start|stop|restart|status)"
+        exit 1
+esac
+
+exit 0
