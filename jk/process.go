@@ -2,7 +2,6 @@ package main
 
 import (
     "os/exec"
-    "strings"
     "fmt"
 )
 
@@ -14,15 +13,16 @@ func (p Process) String() string {
     return fmt.Sprintf("%s: %s",p.Name,p.Pid)
 }
 //var Ps []string
-var ExecPath = "/home/link0x/src/monitor/mana/custom/"
+var ExecPath = "/home/link0x/src/mana/jk/custom/"
 
-func GetProcess(p string) Process {
-    cmd :=  ExecPath + p
-    out,_ := exec.Command(cmd).Output()
-
-    proc := strings.Fields(string(out))
-
-    return Process{Name:proc[0],Pid:proc[1]}
+func GetProcess(name string) Process {
+    cmd :=  ExecPath + name
+    out,err := exec.Command(cmd).Output()
+    pid := string(out)
+    if err != nil {
+        pid = "NO"
+    }
+    return Process{Name:name,Pid:pid}
 }
 
 func main() {
