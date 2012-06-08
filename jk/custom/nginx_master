@@ -2,7 +2,6 @@
 # check process running
 #
 
-NAME="nginx_master"
 CMD="nginx"
 ARGS="-c /etc/nginx/nginx.conf"
 
@@ -12,7 +11,7 @@ process=`ps -C $CMD --no-header -o pid,args|grep -e "$ARGS"` || res=1
 
 if [ $res -eq 0 ]; then
     pid=`echo $process |awk '{print $1}'`
-    /bin/echo -n "$NAME $pid"
+    /bin/echo -n "$pid"
 fi
 
 exit $res
