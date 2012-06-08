@@ -1,0 +1,6 @@
+#!/bin/sh
+
+NUMBER=5
+
+ps --no-heading -eo pid,pcpu,pmem,rsz,vsz,comm \
+    --sort=-rsz |head -n $NUMBER
