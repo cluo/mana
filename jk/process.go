@@ -15,17 +15,20 @@ func (p Process) String() string {
 //var Ps []string
 var ExecPath = "/home/link0x/src/mana/jk/custom/"
 
-func GetProcess(name string) Process {
-    cmd :=  ExecPath + name
+func (p *Process) Get() {
+    cmd :=  ExecPath + p.Name
     out,err := exec.Command(cmd).Output()
-    pid := string(out)
+    var pid string
     if err != nil {
         pid = "NO"
+    } else {
+        pid = string(out)
     }
-    return Process{Name:name,Pid:pid}
+    p.Pid = pid
 }
 
 func main() {
-    proc := GetProcess("nginx_master")
-    fmt.Println(proc)
+    var p = Process{Name:"nginx_master"}
+    p.Get()
+    fmt.Println(p)
 }

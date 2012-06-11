@@ -7,6 +7,70 @@ import (
 	"strings"
 )
 
+type Pcpu struct {
+	Us float64 `json:"%us"`
+	Sy float64 `json:"%sy"`
+	Id float64 `json:"%id"`
+}
+
+func GetPcpu() (Pcpu, string) {
+	out, _ := exec.Command("mpstat", "-P", "ALL")
+	s := strings.SplitAfter(string(out), "\n")
+	var cpu string
+	for _, v := range s {
+		if strings.Contains(v, "all") {
+			cpu = v
+			break
+		}
+	}
+	cur := strings.Fields(cpu)
+	/*
+	 *us,ni,sy := cur[2],cur[3],cur[4]
+	 *wa,hi,si := cur[5],cur[6],cur[7]
+	 *st,id := cur[8],cur[10]
+	 */
+	us, _ := strconv.ParseFloat(cur[2], 64)
+	sy, _ := strconv.ParseFloat(cur[4], 64)
+	id, _ := strconv.ParseFloat(cur[10], 64)
+	return Pcpu{us, sy, id}, string(out)
+}
+
+type Iostat string
+
+func GetIostat() Iostat {
+	out, _ := exec.Command("iostat", "-kd").Output()
+	return Iostat(out)
+}
+
+var NumCPU = runtime.NumCPU()
+
+type Loadavg struct {
+	La1, La5, La15 string
+	Processes      string `json:"processes"`
+}
+
+func GetLa() Loadavg {
+	b, _ := ioutil.ReadFile("/proc/loadavg")
+	s := strings.Fields(string(b))
+	ps := strings.SplitAfterN(s[3], "/", 2)[1]
+
+	return Loadavg{s[0], s[1], s[2], ps}
+}
+
+func (la Loadavg) Overload() bool {
+	la1, _ := strconv.ParseFloat(la.La1, 32)
+	la5, _ := strconv.ParseFloat(la.La5, 32)
+	/*  
+	 * if err != nil {
+	 * }
+	 */
+	la1, la5 := float32(la1), float32(la5)
+	if la5 > 2*NumCPU && la1 > NumCPU+1 {
+		return true
+	}
+	return false
+}
+
 type ByteSize float64
 
 const (

@@ -39,11 +39,9 @@ func GetHddtemp() ([]HddTemp, error) {
 	return hddtemp, nil
 }
 
-type Sensors struct {
-	Sensor string
-}
+type Sensors string
 
 func GetSensors() Sensors {
 	out, _ := exec.Command("sensors").Output()
-	return Sensors{string(out)}
+	return Sensors(out)
 }
