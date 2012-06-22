@@ -10,8 +10,10 @@ import (
 // tcp/udp
 type Server struct {
     Name string `json:"name"`
+    // tcp/udp/unix
     Net string `json:"net"`
-    Addr string `json:"port"`
+    // 127.0.0.1:80 /var/run/example.sock
+    Addr string `json:"addr"`
     Status string `json:"status`
 }
 
@@ -27,7 +29,7 @@ func (t *Server) Check() {
     defer conn.Close()
     t.Status = true
 }
-
+/*
 type Unix struct {
     Name string `json:"name"`
     Path string `json:"path"`
@@ -42,3 +44,4 @@ func (x *Unix) Check() {
     }
     x.Status = false
 }
+*/
