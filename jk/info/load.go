@@ -57,7 +57,7 @@ func GetLa() Loadavg {
 	return Loadavg{s[0], s[1], s[2], ps}
 }
 
-func (la Loadavg) Overload() bool {
+func (la Loadavg) Check() bool {
 	la1, _ := strconv.ParseFloat(la.La1, 32)
 	la5, _ := strconv.ParseFloat(la.La5, 32)
 	/*  

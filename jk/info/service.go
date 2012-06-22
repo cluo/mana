@@ -19,15 +19,16 @@ type Server struct {
 
 var duration = time.Duration(1)*time.Second
 
-func (t *Server) Check() {
+func (t *Server) Check() bool {
     conn, err := net.DialTimeout(t.Net, t.Addr, duration)
     if err != nil {
         //
         t.Status = false
-        return
+        return false
     }
     defer conn.Close()
     t.Status = true
+    return true
 }
 /*
 type Unix struct {

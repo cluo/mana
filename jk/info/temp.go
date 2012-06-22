@@ -14,7 +14,7 @@ type HddTemp struct {
 	Temp string
 }
 
-func GetHddtemp() ([]HddTemp, error) {
+func GetHddtemps() ([]HddTemp, error) {
 	conn, err := net.DialTimeout("tcp", "127.0.0.1:7634", 2*time.Second)
 	var hddtemp []HddTemp
 	if err != nil {

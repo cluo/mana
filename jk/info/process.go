@@ -27,14 +27,21 @@ func (p *Process) GetPid() {
     p.Pid = pid
 }
 
-func Top5cpu() []byte {
-    cmd := ExecPath + "top5_cpu"
-    out,_ := exec.Command(cmd).Output()
-    return out
+func (p *Process) Check() bool {
+    if p.Pid == "N" {
+        return false
+    }
+    return true
 }
 
-func Top5mem() []byte {
+func Top5cpu() string {
+    cmd := ExecPath + "top5_cpu"
+    out,_ := exec.Command(cmd).Output()
+    return string(out)
+}
+
+func Top5mem() string {
     cmd := ExecPath + "top5_mem"
     out,_ := exec.Command(cmd).Output()
-    return out
+    return string(out)
 }
