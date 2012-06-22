@@ -4,7 +4,7 @@ Core 0:      +47.0°C  (crit = +100.0°C)
 
 coretemp-isa-0001
 Adapter: ISA adapter
-Core 1:      +49.0°C  (crit = +100.0°C)                  
+Core 1:      +79.0°C  (crit = +100.0°C)                  
 
 coretemp-isa-0002
 Adapter: ISA adapter

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+NUM=5
+
+ps -eo pid,pcpu,pmem,rsz,vsz,comm \
+    --sort=-pcpu |head -n $((NUM+1))

@@ -10,7 +10,7 @@ import (
 // tcp/udp
 type Server struct {
     Name string `json:"name"`
-    Net string
+    Net string `json:"net"`
     Addr string `json:"port"`
     Status string `json:"status`
 }
@@ -18,7 +18,7 @@ type Server struct {
 var duration = time.Duration(1)*time.Second
 
 func (t *Server) Check() {
-    conn, err != net.DialTimeout(t.Net, t.Addr, duration)
+    conn, err := net.DialTimeout(t.Net, t.Addr, duration)
     if err != nil {
         //
         t.Status = false

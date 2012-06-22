@@ -45,3 +45,11 @@ func GetSensors() Sensors {
 	out, _ := exec.Command("sensors").Output()
 	return Sensors(out)
 }
+
+func (s Sensors) Check() bool {
+    out, _ := exec.Command("../exec/sensors", string(s).Output()
+    if string(out) == "Y" {
+        return true
+    }
+    return false
+}
