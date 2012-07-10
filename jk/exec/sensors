@@ -1,9 +1,0 @@
-#!/bin/sh
-#
-for i in `echo "$1" |awk '/°C/{print $3}' |sed -nr \
-    's/\+(\w+)\.\w°C/\1/p'`; do
-    if [ $i -gt 49 ]; then
-        echo -n "Y"
-        break
-    fi
-done

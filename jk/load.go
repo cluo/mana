@@ -2,19 +2,24 @@ package jk
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os/exec"
+	"runtime"
 	"strconv"
 	"strings"
 )
 
 type Pcpu struct {
-	Us float64 `json:"%us"`
-	Sy float64 `json:"%sy"`
-	Id float64 `json:"%id"`
+	Us float64
+	Sy float64
+	Id float64
 }
 
-func GetPcpu() (Pcpu, string) {
-	out, _ := exec.Command("mpstat", "-P", "ALL")
+func Getpcpu() (*Pcpu, error) {
+	out, err := exec.Command("mpstat", "-P", "ALL").Output()
+	if err != nil {
+		return nil, err
+	}
 	s := strings.SplitAfter(string(out), "\n")
 	var cpu string
 	for _, v := range s {
@@ -32,40 +37,47 @@ func GetPcpu() (Pcpu, string) {
 	us, _ := strconv.ParseFloat(cur[2], 64)
 	sy, _ := strconv.ParseFloat(cur[4], 64)
 	id, _ := strconv.ParseFloat(cur[10], 64)
-	return Pcpu{us, sy, id}, string(out)
+	return &Pcpu{us, sy, id}, nil
 }
 
 type Iostat string
 
-func GetIostat() Iostat {
-	out, _ := exec.Command("iostat", "-kd").Output()
-	return Iostat(out)
+func Getiostat() (Iostat, error) {
+	out, err := exec.Command("iostat", "-kd").Output()
+	if err != nil {
+		return "", nil
+	}
+	return Iostat(out), nil
 }
 
-var NumCPU = runtime.NumCPU()
+var numcpu = runtime.NumCPU()
 
 type Loadavg struct {
 	La1, La5, La15 string
-	Processes      string `json:"processes"`
+	Processes      string
 }
 
-func GetLa() Loadavg {
-	b, _ := ioutil.ReadFile("/proc/loadavg")
+func Getloadavg() (*Loadavg, error) {
+	b, err := ioutil.ReadFile("/proc/loadavg")
+	if err != nil {
+		return nil, err
+	}
 	s := strings.Fields(string(b))
 	ps := strings.SplitAfterN(s[3], "/", 2)[1]
 
-	return Loadavg{s[0], s[1], s[2], ps}
+	return &Loadavg{s[0], s[1], s[2], ps}, nil
 }
 
 func (la Loadavg) Check() bool {
+	n := float64(numcpu)
 	la1, _ := strconv.ParseFloat(la.La1, 32)
 	la5, _ := strconv.ParseFloat(la.La5, 32)
 	/*  
 	 * if err != nil {
 	 * }
 	 */
-	la1, la5 := float32(la1), float32(la5)
-	if la5 > 2*NumCPU && la1 > NumCPU+1 {
+	//la1, la5 = la1.(float32), la5.(float32)
+	if la5 > 2*n && la1 > n+1 {
 		return true
 	}
 	return false
@@ -117,21 +129,21 @@ type Memory struct {
 	Swap Swapd
 }
 
-func GetMem() (statm Memory, err error) {
+func Getmemory() (memory *Memory, err error) {
 	var bts []byte
 	bts, err = exec.Command("free", "-o", "-b").Output()
 	if err != nil {
-		return
+		return nil, err
 	}
 	lines := strings.Split(string(bts), "\n")
 	m, s := strings.Fields(lines[1]), strings.Fields(lines[2])
 
-	statm.Mem = Realm{m[1], m[2], m[3], bz[5], bz[6]}
-	statm.Swap = Swapd{s[1], s[2], z[3]}
-	return
+	memory.Mem = Realm{m[1], m[2], m[3], m[5], m[6]}
+	memory.Swap = Swapd{s[1], s[2], s[3]}
+	return memory, nil
 }
 
-func (m Memory) RealFree() float32 {
+func (m *Memory) Realfree() float32 {
 	r := m.Mem
 	free, _ := strconv.ParseFloat(r.Free, 32)
 	buffers, _ := strconv.ParseFloat(r.Buffers, 32)
@@ -147,9 +159,9 @@ func format(s string) ByteSize {
 	return ByteSize(bys)
 }
 
-func (m Memory) Format() Memory {
-	var r Realm = m.Realm
-	var s Swapd = m.Swapd
+func (m *Memory) Format() *Memory {
+	var r Realm = m.Mem
+	var s Swapd = m.Swap
 
 	fr := Realm{
 		format(r.Total).String(),
@@ -163,5 +175,5 @@ func (m Memory) Format() Memory {
 		format(s.Used).String(),
 		format(s.Free).String(),
 	}
-	return Memory{fr, fs}
+	return &Memory{fr, fs}
 }
