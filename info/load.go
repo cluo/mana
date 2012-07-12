@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// CPU使用率
 type Pcpu struct {
 	Us float64
 	Sy float64
@@ -15,7 +16,6 @@ type Pcpu struct {
 	Id float64
 }
 
-// CPU使用率
 func GetPcpu() (*Pcpu, error) {
 	out, err := exec.Command("/usr/bin/mpstat").Output()
 	if err != nil {
@@ -106,7 +106,7 @@ type Realm struct {
 	Cached  string
 }
 
-// 物理内存
+// 交换分区
 type Swapd struct {
 	Total string
 	Used  string
@@ -132,6 +132,7 @@ func GetMemory() (memory *Memory, err error) {
 	return memory, nil
 }
 
+// 未使用的内存加上缓存 
 func (m *Memory) Real() float32 {
 	r := m.Mem
 	free, _ := strconv.ParseFloat(r.Free, 32)
@@ -148,6 +149,7 @@ func format(s string) ByteSize {
 	return ByteSize(bys)
 }
 
+// 格式化为易读的数据
 func (m *Memory) Format() *Memory {
 	var r Realm = m.Mem
 	var s Swapd = m.Swap

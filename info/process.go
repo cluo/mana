@@ -1,9 +1,10 @@
 package info
 
 import (
+	"mana/cfg"
 	"os/exec"
-    "mana/cfg"
 )
+
 // 自定义的进程检查,
 type Process cfg.Process
 
@@ -19,7 +20,7 @@ func (p *Process) Check() error {
 		return error
 	}
 	p.Pid = string(out)
-    return nil
+	return nil
 }
 
 // CPU使用率最高的进程

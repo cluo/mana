@@ -1,9 +1,9 @@
 package info
 
 import (
+	"mana/cfg"
 	"net"
 	"time"
-    "mana/cfg"
 )
 
 // tcp/udp 系统服务
@@ -15,10 +15,10 @@ func (t *Service) Check() error {
 	conn, err := net.DialTimeout(t.Net, t.Addr, timeout)
 	if err != nil {
 		t.Status = false
-        return err
+		return err
 	} else {
 		t.Status = true
 	}
 	conn.Close()
-    return nil
+	return nil
 }
