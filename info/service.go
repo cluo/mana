@@ -3,28 +3,22 @@ package info
 import (
 	"net"
 	"time"
+    "mana/cfg"
 )
 
-// tcp/udp
-type Service struct {
-	Name string
-	// tcp/udp/unix
-	Net string
-	// 127.0.0.1:80 /var/run/example.sock
-	Addr     string
-	Status   bool `json:"-"`
-	Interval time.Duration
-}
+// tcp/udp 系统服务
+type Service cfg.Service
 
 var timeout = 1 * time.Second
 
-func (t *Service) Check() {
+func (t *Service) Check() error {
 	conn, err := net.DialTimeout(t.Net, t.Addr, timeout)
 	if err != nil {
-		//
 		t.Status = false
+        return err
 	} else {
 		t.Status = true
 	}
 	conn.Close()
+    return nil
 }

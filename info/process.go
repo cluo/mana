@@ -2,25 +2,24 @@ package info
 
 import (
 	"os/exec"
+    "mana/cfg"
 )
-
-type Process struct {
-	Name string
-	Pid  string `json:"-"`
-}
+// 自定义的进程检查,
+type Process cfg.Process
 
 func (p *Process) String() string {
 	s := p.Name + ": " + p.Pid
 	return s
 }
 
-func (p *Process) Check() {
+func (p *Process) Check() error {
 	cmd := cf.Base + "/bin/" + p.Name
 	out, err := exec.Command(cmd).Output()
 	if err != nil {
-		return
+		return error
 	}
 	p.Pid = string(out)
+    return nil
 }
 
 // CPU使用率最高的进程
