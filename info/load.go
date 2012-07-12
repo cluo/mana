@@ -1,10 +1,9 @@
-package jk
+package info
 
 import (
 	"fmt"
 	"io/ioutil"
 	"os/exec"
-	"runtime"
 	"strconv"
 	"strings"
 )
@@ -12,22 +11,18 @@ import (
 type Pcpu struct {
 	Us float64
 	Sy float64
+	Wa float64
 	Id float64
 }
 
-func Getpcpu() (*Pcpu, error) {
-	out, err := exec.Command("mpstat", "-P", "ALL").Output()
+// CPU使用率
+func GetPcpu() (*Pcpu, error) {
+	out, err := exec.Command("/usr/bin/mpstat").Output()
 	if err != nil {
 		return nil, err
 	}
 	s := strings.SplitAfter(string(out), "\n")
-	var cpu string
-	for _, v := range s {
-		if strings.Contains(v, "all") {
-			cpu = v
-			break
-		}
-	}
+	var cpu = s[len(s)-1]
 	cur := strings.Fields(cpu)
 	/*
 	 *us,ni,sy := cur[2],cur[3],cur[4]
@@ -36,28 +31,28 @@ func Getpcpu() (*Pcpu, error) {
 	 */
 	us, _ := strconv.ParseFloat(cur[2], 64)
 	sy, _ := strconv.ParseFloat(cur[4], 64)
+	wa, _ := strconv.ParseFloat(cur[5], 64)
 	id, _ := strconv.ParseFloat(cur[10], 64)
-	return &Pcpu{us, sy, id}, nil
+	return &Pcpu{us, sy, wa, id}, nil
 }
 
 type Iostat string
 
-func Getiostat() (Iostat, error) {
-	out, err := exec.Command("iostat", "-kd").Output()
+func GetIostat() (Iostat, error) {
+	out, err := exec.Command("iostat", "-kdx").Output()
 	if err != nil {
 		return "", nil
 	}
 	return Iostat(out), nil
 }
 
-var numcpu = runtime.NumCPU()
-
 type Loadavg struct {
 	La1, La5, La15 string
 	Processes      string
 }
 
-func Getloadavg() (*Loadavg, error) {
+// 系统负载情况
+func GetLoadavg() (*Loadavg, error) {
 	b, err := ioutil.ReadFile("/proc/loadavg")
 	if err != nil {
 		return nil, err
@@ -68,15 +63,10 @@ func Getloadavg() (*Loadavg, error) {
 	return &Loadavg{s[0], s[1], s[2], ps}, nil
 }
 
-func (la Loadavg) Check() bool {
+func (la *Loadavg) Check() bool {
 	n := float64(numcpu)
 	la1, _ := strconv.ParseFloat(la.La1, 32)
 	la5, _ := strconv.ParseFloat(la.La5, 32)
-	/*  
-	 * if err != nil {
-	 * }
-	 */
-	//la1, la5 = la1.(float32), la5.(float32)
 	if la5 > 2*n && la1 > n+1 {
 		return true
 	}
@@ -107,7 +97,7 @@ func (b ByteSize) String() string {
 	return fmt.Sprintf("%.2fB", b)
 }
 
-// mem
+// 物理内存
 type Realm struct {
 	Total   string
 	Used    string
@@ -116,7 +106,7 @@ type Realm struct {
 	Cached  string
 }
 
-// swap
+// 物理内存
 type Swapd struct {
 	Total string
 	Used  string
@@ -129,9 +119,8 @@ type Memory struct {
 	Swap Swapd
 }
 
-func Getmemory() (memory *Memory, err error) {
-	var bts []byte
-	bts, err = exec.Command("free", "-o", "-b").Output()
+func GetMemory() (memory *Memory, err error) {
+	bts, err := exec.Command("free", "-o", "-b").Output()
 	if err != nil {
 		return nil, err
 	}
@@ -143,7 +132,7 @@ func Getmemory() (memory *Memory, err error) {
 	return memory, nil
 }
 
-func (m *Memory) Realfree() float32 {
+func (m *Memory) Real() float32 {
 	r := m.Mem
 	free, _ := strconv.ParseFloat(r.Free, 32)
 	buffers, _ := strconv.ParseFloat(r.Buffers, 32)

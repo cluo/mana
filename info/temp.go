@@ -1,4 +1,4 @@
-package jk
+package info
 
 import (
 	"bytes"
@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"time"
 )
+
 type Hddtemp struct {
 	Dev  string
 	Desc string
@@ -40,13 +41,13 @@ func GetHddtemps() (temps []Hddtemp, err error) {
 
 type Sensors string
 
-func Getsensors() (Sensors, error) {
+func GetSensors() (Sensors, error) {
 	out, err := exec.Command("sensors").Output()
 	return Sensors(out), err
 }
 
 func (s Sensors) Check() (bool, error) {
-	sensor := cf.Basedir + "/bin/" + "sensors"
+	sensor := cf.Base + "/bin/" + "sensors"
 	out, err := exec.Command(sensor, string(s)).Output()
 	if err != nil {
 		return false, err

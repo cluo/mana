@@ -1,4 +1,4 @@
-package jk
+package info
 
 import (
 	"net"
@@ -11,14 +11,15 @@ type Service struct {
 	// tcp/udp/unix
 	Net string
 	// 127.0.0.1:80 /var/run/example.sock
-	Addr   string
-	Status bool
+	Addr     string
+	Status   bool `json:"-"`
+	Interval time.Duration
 }
 
-var duration = 1 * time.Second
+var timeout = 1 * time.Second
 
 func (t *Service) Check() {
-	conn, err := net.DialTimeout(t.Net, t.Addr, duration)
+	conn, err := net.DialTimeout(t.Net, t.Addr, timeout)
 	if err != nil {
 		//
 		t.Status = false
