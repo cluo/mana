@@ -16,6 +16,7 @@ type Host struct {
 func GetHost() (h *Host, err error) {
 	b, err := ioutil.ReadFile("/proc/uptime")
 	if err != nil {
+		ErrorLog.Println("ReadFile /proc/uptime:", err)
 		return nil, err
 	}
 	for i := 0; i < len(b); i++ {
@@ -27,12 +28,14 @@ func GetHost() (h *Host, err error) {
 	t := string(b) + "s"
 	d, err := time.ParseDuration(t)
 	if err != nil {
+		ErrorLog.Println("time.ParseDuration:", err)
 		return nil, err
 	}
 	boot := time.Now().Add(-d)
 
 	hn, err := os.Hostname()
 	if err != nil {
+		ErrorLog.Println("hostname:", err)
 		return nil, err
 	}
 

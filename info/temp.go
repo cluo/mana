@@ -21,12 +21,14 @@ func newHddtemp(dev, des, temp string) Hddtemp {
 func GetHddtemps() (temps []Hddtemp, err error) {
 	conn, err := net.DialTimeout("tcp", "127.0.0.1:7634", 2*time.Second)
 	if err != nil {
+		ErrorLog.Println("tcp://127.0.0.1:7634", err)
 		return
 	}
 	defer conn.Close()
 
 	bts, err := ioutil.ReadAll(conn)
 	if err != nil {
+		ErrorLog.Println("reading from 127.0.0.1:7634:", err)
 		return
 	}
 
@@ -39,21 +41,26 @@ func GetHddtemps() (temps []Hddtemp, err error) {
 	return temps, nil
 }
 
-type Sensors string
+type Sensor string
 
-func GetSensors() (Sensors, error) {
+func GetSensor() (Sensor, error) {
 	out, err := exec.Command("sensors").Output()
-	return Sensors(out), err
+	return Sensor(out), err
 }
 
-func (s Sensors) Check() (bool, error) {
-	sensor := cf.Base + "/bin/" + "sensors"
-	out, err := exec.Command(sensor, string(s)).Output()
+type Temp struct {
+	Disk    []Hddtemp
+	Sensors Sensor
+}
+
+func GetTemp() (*Temp, error) {
+	disks, err := GetHddtemps()
 	if err != nil {
-		return false, err
+		return nil, err
 	}
-	if len(out) > 0 {
-		return true, nil
+	sensors, err := GetSensor()
+	if err != nil {
+		return nil, err
 	}
-	return false, nil
+	return &Temp{disks, sensors}, nil
 }

@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os/exec"
+	"runtime"
 	"strconv"
 	"strings"
 )
+
+var numcpu = runtime.NumCPU()
 
 // CPU使用率
 type Pcpu struct {
@@ -19,6 +22,7 @@ type Pcpu struct {
 func GetPcpu() (*Pcpu, error) {
 	out, err := exec.Command("/usr/bin/mpstat").Output()
 	if err != nil {
+		ErrorLog.Println("exec /usr/bin/mpstat", err)
 		return nil, err
 	}
 	s := strings.SplitAfter(string(out), "\n")
@@ -41,6 +45,7 @@ type Iostat string
 func GetIostat() (Iostat, error) {
 	out, err := exec.Command("iostat", "-kdx").Output()
 	if err != nil {
+		ErrorLog.Println("iostat -kdx:", err)
 		return "", nil
 	}
 	return Iostat(out), nil
@@ -55,6 +60,7 @@ type Loadavg struct {
 func GetLoadavg() (*Loadavg, error) {
 	b, err := ioutil.ReadFile("/proc/loadavg")
 	if err != nil {
+		ErrorLog.Println("ReadFile /proc/loadava:", err)
 		return nil, err
 	}
 	s := strings.Fields(string(b))
@@ -63,7 +69,7 @@ func GetLoadavg() (*Loadavg, error) {
 	return &Loadavg{s[0], s[1], s[2], ps}, nil
 }
 
-func (la *Loadavg) Check() bool {
+func (la *Loadavg) Overload() bool {
 	n := float64(numcpu)
 	la1, _ := strconv.ParseFloat(la.La1, 32)
 	la5, _ := strconv.ParseFloat(la.La5, 32)
@@ -122,6 +128,7 @@ type Memory struct {
 func GetMemory() (memory *Memory, err error) {
 	bts, err := exec.Command("free", "-o", "-b").Output()
 	if err != nil {
+		ErrorLog.Println("exec free -ob:", err)
 		return nil, err
 	}
 	lines := strings.Split(string(bts), "\n")
@@ -167,4 +174,31 @@ func (m *Memory) Format() *Memory {
 		format(s.Free).String(),
 	}
 	return &Memory{fr, fs}
+}
+
+type Load struct {
+	Cpu  *Pcpu    `json:"cpu"`
+	Mem  *Memory  `json:"mem"`
+	Load *Loadavg `json:"load"`
+	IO   Iostat   `json:"io"`
+}
+
+func GetLoad() (*Load, error) {
+	pcpu, err := GetPcpu()
+	if err != nil {
+		return nil, err
+	}
+	mem, err := GetMemory()
+	if err != nil {
+		return nil, err
+	}
+	load, err := GetLoadavg()
+	if err != nil {
+		return nil, err
+	}
+	iostat, err := GetIostat()
+	if err != nil {
+		return nil, err
+	}
+	return &Load{pcpu, mem, load, iostat}, nil
 }
