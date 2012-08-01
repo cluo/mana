@@ -1,6 +1,7 @@
 package info
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os/exec"
@@ -20,13 +21,13 @@ type Pcpu struct {
 }
 
 func GetPcpu() (*Pcpu, error) {
-	out, err := exec.Command("/usr/bin/mpstat").Output()
+	all, err := exec.Command("/usr/bin/mpstat").Output()
 	if err != nil {
-		ErrorLog.Println("exec /usr/bin/mpstat", err)
+		elog.Println("/usr/bin/mpstat", err)
 		return nil, err
 	}
-	s := strings.SplitAfter(string(out), "\n")
-	var cpu = s[len(s)-1]
+	s := strings.SplitAfter(string(all), "\n")
+	var cpu = s[3]
 	cur := strings.Fields(cpu)
 	/*
 	 *us,ni,sy := cur[2],cur[3],cur[4]
@@ -45,8 +46,8 @@ type Iostat string
 func GetIostat() (Iostat, error) {
 	out, err := exec.Command("iostat", "-kdx").Output()
 	if err != nil {
-		ErrorLog.Println("iostat -kdx:", err)
-		return "", nil
+		elog.Println("iostat -kdx:", err)
+		return "", errors.New("iostat command error")
 	}
 	return Iostat(out), nil
 }
@@ -60,7 +61,7 @@ type Loadavg struct {
 func GetLoadavg() (*Loadavg, error) {
 	b, err := ioutil.ReadFile("/proc/loadavg")
 	if err != nil {
-		ErrorLog.Println("ReadFile /proc/loadava:", err)
+		elog.Println("reading /proc/loadavg:", err)
 		return nil, err
 	}
 	s := strings.Fields(string(b))
@@ -104,7 +105,7 @@ func (b ByteSize) String() string {
 }
 
 // 物理内存
-type Realm struct {
+type Mem struct {
 	Total   string
 	Used    string
 	Free    string
@@ -113,34 +114,35 @@ type Realm struct {
 }
 
 // 交换分区
-type Swapd struct {
+type Swap struct {
 	Total string
 	Used  string
 	Free  string
 }
 
 // free -o
-type Memory struct {
-	Mem  Realm
-	Swap Swapd
+type Free struct {
+	Mem  Mem
+	Swap Swap
 }
 
-func GetMemory() (memory *Memory, err error) {
+func GetFree() (*Free, error) {
+	var free = new(Free)
 	bts, err := exec.Command("free", "-o", "-b").Output()
 	if err != nil {
-		ErrorLog.Println("exec free -ob:", err)
+		elog.Println("free -ob:", err)
 		return nil, err
 	}
 	lines := strings.Split(string(bts), "\n")
 	m, s := strings.Fields(lines[1]), strings.Fields(lines[2])
 
-	memory.Mem = Realm{m[1], m[2], m[3], m[5], m[6]}
-	memory.Swap = Swapd{s[1], s[2], s[3]}
-	return memory, nil
+	free.Mem = Mem{Total: m[1], Used: m[2], Free: m[3], Buffers: m[5], Cached: m[6]}
+	free.Swap = Swap{Total: s[1], Used: s[2], Free: s[3]}
+	return free, nil
 }
 
 // 未使用的内存加上缓存 
-func (m *Memory) Real() float32 {
+func (m *Free) Real() float32 {
 	r := m.Mem
 	free, _ := strconv.ParseFloat(r.Free, 32)
 	buffers, _ := strconv.ParseFloat(r.Buffers, 32)
@@ -157,48 +159,47 @@ func format(s string) ByteSize {
 }
 
 // 格式化为易读的数据
-func (m *Memory) Format() *Memory {
-	var r Realm = m.Mem
-	var s Swapd = m.Swap
+func (m *Free) Format() *Free {
+	var r, s = m.Mem, m.Swap
 
-	fr := Realm{
+	fr := Mem{
 		format(r.Total).String(),
 		format(r.Used).String(),
 		format(r.Free).String(),
 		format(r.Buffers).String(),
 		format(r.Cached).String(),
 	}
-	fs := Swapd{
+	fs := Swap{
 		format(s.Total).String(),
 		format(s.Used).String(),
 		format(s.Free).String(),
 	}
-	return &Memory{fr, fs}
+	return &Free{fr, fs}
 }
 
 type Load struct {
-	Cpu  *Pcpu    `json:"cpu"`
-	Mem  *Memory  `json:"mem"`
-	Load *Loadavg `json:"load"`
-	IO   Iostat   `json:"io"`
+	Cpu  *Pcpu
+	Free *Free
+	Load *Loadavg
+	IO   Iostat
 }
 
 func GetLoad() (*Load, error) {
 	pcpu, err := GetPcpu()
 	if err != nil {
-		return nil, err
+		return nil, errors.New("func GetPcpu() failed")
 	}
-	mem, err := GetMemory()
+	free, err := GetFree()
 	if err != nil {
-		return nil, err
+		return nil, errors.New("func GetFree() failed")
 	}
 	load, err := GetLoadavg()
 	if err != nil {
-		return nil, err
+		return nil, errors.New("func GetLoadavg() failed")
 	}
 	iostat, err := GetIostat()
 	if err != nil {
-		return nil, err
+		return nil, errors.New("func GetIostat() failed")
 	}
-	return &Load{pcpu, mem, load, iostat}, nil
+	return &Load{pcpu, free, load, iostat}, nil
 }

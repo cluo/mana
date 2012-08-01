@@ -10,16 +10,17 @@ type Process struct {
 	Pid  string
 }
 
-func (p *Process) Get(name *string, reply *Process) error {
-	reply.Name = *name
-	var cmd = "../bin/" + *name
+func (a *Agent) Process(name string) (*Process, error) {
+	var reply = new(Process)
+	reply.Name = name
+	var cmd = "./bin/" + name
 	pid_b, err := exec.Command(cmd).Output()
 	if err != nil {
-		ErrorLog.Println("exec,", cmd, err)
-		return err
+		elog.Println("process", cmd, err)
+		return nil, err
 	}
 	reply.Pid = string(pid_b)
-	return nil
+	return reply, nil
 }
 
 func (p *Process) String() string {
@@ -33,16 +34,17 @@ type TopCpu struct {
 	Result string
 }
 
-func (top *TopCpu) Get(n *string, reply *TopCpu) error {
-	reply.Num = *n
-	cmd := "../bin/" + "cpu_top"
-	ctop, err := exec.Command(cmd, *n).Output()
+func (a *Agent) TopBycpu(n string) (*TopCpu, error) {
+	var reply = new(TopCpu)
+	reply.Num = n
+	cmd := "./bin/" + "cpu_top"
+	ctop, err := exec.Command(cmd, n).Output()
 	if err != nil {
-		ErrorLog.Println("exec,", cmd, err)
-		return err
+		elog.Println("top cpu", cmd, err)
+		return nil, err
 	}
 	reply.Result = string(ctop)
-	return nil
+	return reply, nil
 }
 
 type TopMem struct {
@@ -50,14 +52,15 @@ type TopMem struct {
 	Result string
 }
 
-func (top *TopMem) Get(n *string, reply *TopMem) error {
-	reply.Num = *n
-	cmd := "../bin/" + "cpu_mem"
-	mtop, err := exec.Command(cmd, *n).Output()
+func (a *Agent) TopBymem(n string) (*TopMem, error) {
+	var reply = new(TopMem)
+	reply.Num = n
+	cmd := "./bin/" + "mem_top"
+	mtop, err := exec.Command(cmd, n).Output()
 	if err != nil {
-		ErrorLog.Println("exec,", cmd, err)
-		return err
+		elog.Println("top mem", cmd, err)
+		return nil, err
 	}
 	reply.Result = string(mtop)
-	return nil
+	return reply, nil
 }

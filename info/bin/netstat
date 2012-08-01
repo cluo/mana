@@ -1,0 +1,7 @@
+#!/bin/sh
+# print "tcp/udp ipaddr port"
+# 2012-06-13
+# wqt.acc@gmail.com
+    #$1 ~ /tcp|udp/ { print $1,$4,$5}';
+netstat -ltun |awk 'BEGIN { FS = " +|:" }
+    $1 ~ /tcp|udp/ { print $1,$4,$5}';

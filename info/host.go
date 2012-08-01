@@ -6,17 +6,17 @@ import (
 	"time"
 )
 
-// 服务器主机名、启动时间以及运行时间
-type Host struct {
-	Hostname string
-	Boot     time.Time
-	Uptime   string
+type Hostname struct {
+	Name   string
+	Boot   time.Time
+	Uptime string
 }
 
-func GetHost() (h *Host, err error) {
+// 服务器主机名、启动时间以及运行时间:/proc/uptime
+func GetHostname() (*Hostname, error) {
 	b, err := ioutil.ReadFile("/proc/uptime")
 	if err != nil {
-		ErrorLog.Println("ReadFile /proc/uptime:", err)
+		elog.Println("ReadFile /proc/uptime:", err)
 		return nil, err
 	}
 	for i := 0; i < len(b); i++ {
@@ -25,19 +25,21 @@ func GetHost() (h *Host, err error) {
 			break
 		}
 	}
+	// /proc/uptime
+	// first is the uptime of the system (seconds)
 	t := string(b) + "s"
 	d, err := time.ParseDuration(t)
 	if err != nil {
-		ErrorLog.Println("time.ParseDuration:", err)
+		elog.Println("time.ParseDuration:", err)
 		return nil, err
 	}
 	boot := time.Now().Add(-d)
 
-	hn, err := os.Hostname()
+	hostname, err := os.Hostname()
 	if err != nil {
-		ErrorLog.Println("hostname:", err)
+		elog.Println("hostname:", err)
 		return nil, err
 	}
 
-	return &Host{hn, boot, d.String()}, nil
+	return &Hostname{hostname, boot, d.String()}, nil
 }

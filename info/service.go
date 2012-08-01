@@ -3,39 +3,54 @@ package info
 import (
 	"fmt"
 	"net"
-	"time"
+	"os/exec"
 )
 
 // tcp/udp 系统服务
-type Service struct {
+type Tcp struct {
 	Name    string
 	Address string
 	Status  bool
 }
 
-type Args_s struct {
-	Name      string
-	Net, Addr string
-	Timeout   time.Duration
-}
-
-func (srv *Service) Get(args *Args_s, reply *Service) error {
-	reply.Name = args.Name
-	reply.Address = args.Net + "://" + args.Addr
-	var timeout = 1 * time.Second
-	if args.Timeout > 1*time.Second {
-		timeout = args.Timeout
-	}
-	conn, err := net.DialTimeout(args.Net, args.Addr, timeout)
+func (a *Agent) Tcp(name, addr, port string) (*Tcp, error) {
+	tcp := new(Tcp)
+	tcp.Name = name
+	tcp.Address = addr + ":" + port
+	conn, err := net.Dial("tcp", tcp.Address)
 	if err != nil {
-		ErrorLog.Println("net.Dial,", args.Net, args.Addr)
-		return err
+		elog.Println("service tcp:", name, err)
+		return nil, err
 	}
-	conn.Close()
-	reply.Status = true
-	return nil
+	defer conn.Close()
+	tcp.Status = true
+	return tcp, nil
 }
 
-func (srv *Service) String() string {
-	return fmt.Sprintf("%s:%s:%s", srv.Name, srv.Address, srv.Status)
+func (t *Tcp) String() string {
+	return fmt.Sprintf("%s:%s:%s", t.Name, t.Address, t.Status)
+}
+
+type Udp struct {
+	Name    string
+	Address string
+	Status  bool
+}
+
+func (a *Agent) Udp(name, addr, port string) (*Udp, error) {
+	udp := new(Udp)
+	udp.Name = name
+	udp.Address = addr + ":" + port
+	cmd := exec.Command("nc", "-zvu", addr, port)
+	_, err := cmd.Output()
+	if err != nil {
+		elog.Println("service udp:", name, "error")
+		return nil, err
+	}
+	udp.Status = true
+	return udp, nil
+}
+
+func (u *Udp) String() string {
+	return fmt.Sprintf("%s:%s:%s", u.Name, u.Address, u.Status)
 }
