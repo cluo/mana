@@ -28,7 +28,7 @@ func (a *Agent) Tcp(name, addr, port string) (*Tcp, error) {
 }
 
 func (t *Tcp) String() string {
-	return fmt.Sprintf("%s:%s:%s", t.Name, t.Address, t.Status)
+	return fmt.Sprintf("%s:%s:%t", t.Name, t.Address, t.Status)
 }
 
 type Udp struct {
@@ -52,5 +52,5 @@ func (a *Agent) Udp(name, addr, port string) (*Udp, error) {
 }
 
 func (u *Udp) String() string {
-	return fmt.Sprintf("%s:%s:%s", u.Name, u.Address, u.Status)
+	return fmt.Sprintf("%s:%s:%t", u.Name, u.Address, u.Status)
 }

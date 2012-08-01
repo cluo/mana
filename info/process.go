@@ -10,6 +10,11 @@ type Process struct {
 	Pid  string
 }
 
+func (p *Process) String() string {
+	s := p.Name + ":" + p.Pid
+	return s
+}
+
 func (a *Agent) Process(name string) (*Process, error) {
 	var reply = new(Process)
 	reply.Name = name
@@ -21,11 +26,6 @@ func (a *Agent) Process(name string) (*Process, error) {
 	}
 	reply.Pid = string(pid_b)
 	return reply, nil
-}
-
-func (p *Process) String() string {
-	s := p.Name + ": " + p.Pid
-	return s
 }
 
 // CPU使用率最高的进程

@@ -20,6 +20,10 @@ type Pcpu struct {
 	Id float64
 }
 
+func (p *Pcpu) String() string {
+	return fmt.Sprintf("us\tsy\twa\tidle\n%.2f\t%.2f\t%.2f\t%.2f", p.Us, p.Sy, p.Wa, p.Id)
+}
+
 func GetPcpu() (*Pcpu, error) {
 	all, err := exec.Command("/usr/bin/mpstat").Output()
 	if err != nil {
@@ -55,6 +59,10 @@ func GetIostat() (Iostat, error) {
 type Loadavg struct {
 	La1, La5, La15 string
 	Processes      string
+}
+
+func (l *Loadavg) String() string {
+	return fmt.Sprintf("%s %s %s\t%s", l.La1, l.La5, l.La15, l.Processes)
 }
 
 // 系统负载情况
@@ -124,6 +132,14 @@ type Swap struct {
 type Free struct {
 	Mem  Mem
 	Swap Swap
+}
+
+func (f *Free) String() string {
+	mem, swap := f.Mem, f.Swap
+	s := fmt.Sprintf("Mem:\t%s\t%s\t%s\t%s\t%s\nSwap:\t%s\t%s\t%s",
+		mem.Total, mem.Used, mem.Free, mem.Buffers, mem.Cached,
+		swap.Total, swap.Used, swap.Free)
+	return s
 }
 
 func GetFree() (*Free, error) {

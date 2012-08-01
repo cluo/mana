@@ -5,9 +5,9 @@ import (
 	"testing"
 )
 
-func TestGetHost(t *testing.T) {
+func TestGetHostname(t *testing.T) {
 	fmt.Println("--- testing GetHost ---")
-	h, err := GetHost()
+	h, err := GetHostname()
 	if err != nil {
 		t.Error(err)
 	}
@@ -16,43 +16,66 @@ func TestGetHost(t *testing.T) {
 }
 
 func TestGetPcpu(t *testing.T) {
-	if _, err := GetPcpu(); err != nil {
+	fmt.Println("--- testing GetPcpu ---")
+	pcpu, err := GetPcpu()
+	if err != nil {
 		t.Error(err)
 	}
+	fmt.Println(pcpu)
+	fmt.Println("--- end ---")
 }
 
 func TestGetHddtemps(t *testing.T) {
-	if _, err := GetHddtemps(); err != nil {
+	fmt.Println("--- testing GetHddtemps ---")
+	hts, err := GetHddtemps()
+	if err != nil {
 		t.Error(err)
 	}
+	for k, v := range hts {
+		fmt.Println(k, v)
+	}
+	fmt.Println("--- end ---")
 }
 
 func TestGetLoadavg(t *testing.T) {
-	if _, err := GetLoadavg(); err != nil {
+	fmt.Println("--- testing GetLoadavg ---")
+	loadavg, err := GetLoadavg()
+	if err != nil {
 		t.Error(err)
 	}
+	fmt.Println(loadavg)
+	fmt.Println("--- end ---")
 }
 
-func TestGetMemory(t *testing.T) {
-	if _, err := GetMemory(); err != nil {
+func TestGetFree(t *testing.T) {
+	fmt.Println("--- testing GetFree ---")
+	free, err := GetFree()
+	if err != nil {
 		t.Error(err)
 	}
+	fmt.Println(free.Format())
+	fmt.Println("--- end ---")
 }
 
-var my = new(Myapp)
+var agent = new(Agent)
 
 func TestProcess(t *testing.T) {
-	var proc = new(Process)
+	fmt.Println("--- testing Process ---")
 	var name = "nginx_master"
-	if err := my.Process(&name, proc); err != nil {
-		t.Error(name, err)
+	proc, err := agent.Process(name)
+	if err != nil {
+		t.Error(err)
 	}
+	fmt.Println(proc)
+	fmt.Println("--- end ---")
 }
 
 func TestTcp(t *testing.T) {
-	var tcp = new(Tcp)
-	var args = &Tcpip{"hddtemp", "127.0.0.1", "7634", 2}
-	if err := my.Tcp(args, tcp); err != nil {
-		t.Error(*args, err)
+	fmt.Println("--- testing Tcp ---")
+	tcp, err := agent.Tcp("hddtemp", "127.0.0.1", "7634")
+	if err != nil {
+		t.Error(err)
 	}
+	fmt.Println(tcp)
+	fmt.Println("--- end ---")
 }

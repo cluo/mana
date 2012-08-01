@@ -12,6 +12,10 @@ type Hostname struct {
 	Uptime string
 }
 
+func (h *Hostname) String() string {
+	return h.Name + ":" + h.Boot.String() + ":" + h.Uptime
+}
+
 // 服务器主机名、启动时间以及运行时间:/proc/uptime
 func GetHostname() (*Hostname, error) {
 	b, err := ioutil.ReadFile("/proc/uptime")

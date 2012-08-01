@@ -15,6 +15,10 @@ type Hddtemp struct {
 	Temp string
 }
 
+func (t Hddtemp) String() string {
+	return t.Dev + ":" + t.Desc + ":" + t.Temp
+}
+
 func newHddtemp(dev, des, temp string) Hddtemp {
 	return Hddtemp{dev, des, temp}
 }
