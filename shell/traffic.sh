@@ -3,9 +3,5 @@
 FILE='/proc/net/dev'
 
 cat $FILE |awk '
-BEGIN {
-    printf "%s\t%s\t%s\n","interface", "receive", "transmit"
-};
-/eth/ {
-    printf "%s\t\t%s\t%s\n", $1, $2, $10
-}'
+BEGIN {printf "%s %s %s\n","adapter", "receive", "transmit(bytes)"};
+/eth/ {printf "%s %s %s\n", $1, $2, $10}'
