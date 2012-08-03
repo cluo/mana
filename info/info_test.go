@@ -79,3 +79,24 @@ func TestTcp(t *testing.T) {
 	fmt.Println(tcp)
 	fmt.Println("--- end ---")
 }
+func TestUdp(t *testing.T) {
+	fmt.Println("--- testing Udp ---")
+	udp, err := agent.Udp("snmp", "127.0.0.1", "161")
+	if err != nil {
+		t.Error(err)
+	}
+	fmt.Println(udp)
+	fmt.Println("--- end ---")
+}
+
+func TestAdapter(t *testing.T) {
+	fmt.Println("--- testing Adapter ---")
+	as, err := GetAdapters()
+	if err != nil {
+		t.Error(err)
+	}
+	for _, v := range as {
+		fmt.Println(v)
+	}
+	fmt.Println("--- end ---")
+}

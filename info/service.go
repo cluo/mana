@@ -37,6 +37,7 @@ type Udp struct {
 	Status  bool
 }
 
+// Udp only check adr='127.0.0.1'
 func (a *Agent) Udp(name, addr, port string) (*Udp, error) {
 	udp := new(Udp)
 	udp.Name = name
