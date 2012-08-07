@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// 服务器主机名、启动时间以及运行时间
 type Hostname struct {
 	Name   string
 	Boot   time.Time
@@ -16,7 +17,7 @@ func (h *Hostname) String() string {
 	return h.Name + ":" + h.Boot.String() + ":" + h.Uptime
 }
 
-// 服务器主机名、启动时间以及运行时间:/proc/uptime
+// 读取/proc/uptime，第一数值即系统运行时间，单位为秒(s)
 func GetHostname() (*Hostname, error) {
 	b, err := ioutil.ReadFile("/proc/uptime")
 	if err != nil {
@@ -29,8 +30,7 @@ func GetHostname() (*Hostname, error) {
 			break
 		}
 	}
-	// /proc/uptime
-	// first is the uptime of the system (seconds)
+
 	t := string(b) + "s"
 	d, err := time.ParseDuration(t)
 	if err != nil {

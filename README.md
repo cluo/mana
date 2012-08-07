@@ -3,16 +3,18 @@ PACKAGE
 package info
     import "mana/info"
 
-    简单的获取cpu利用率，系统内存使用情况，磁盘读写情况. 查看cpu温度命令sensors输出内容，判断是否高于（70）等. 获取硬盘温度.
-    使用package net检查tcp/udp等服务是否在线. 使用shell脚本检查特定进程。
+    sensors命令:"lm-sensors" mpstat, iostat命令:"sysstat"
 
 FUNCTIONS
 
 func GetAdapters() ([]Adapter, error)
+    读取/proc/net/dev
 
 func GetHddtemps() (temps []Hddtemp, err error)
+    需要hddtemp以守护进程运行，如："sudo hddtemp -d /dev/sd[a-d]"
 
 func GetPcpus() ([]Pcpu, error)
+    cpu使用率，多cpu的情况，第一个是平均值
 
 func NewLogger(name string) *log.Logger
 
@@ -21,29 +23,35 @@ TYPES
 
 type Adapter struct {
     Name     string
-    Receive  int64
-    Transmit int64
+    Receive  float64
+    Transmit float64
     Time     time.Time
 }
+    上传和下载的流量，从系统启动累加
 
 func (a Adapter) String() string
 
 type Agent struct{}
 
 func (a *Agent) Process(name string) (*Process, error)
+    名称=name的脚本放置在bin目录下
 
 func (a *Agent) Shell(name, path string) (*Shell, error)
+    name如果为""，使用filepath.Base(path)
 
 func (a *Agent) System() (*Server, error)
 
 func (a *Agent) Tcp(name, addr, port string) (*Tcp, error)
+    name服务名称，addr、port ip地址和端口
 
 func (a *Agent) Top(n string, sort string) (*TopProcess, error)
+    n 是一个整数，脚本"bin/mem_top","bin/cpu_top"中取值为5-10 sort只能是"cpu"或者"mem"
 
 func (a *Agent) Udp(name, addr, port string) (*Udp, error)
-    Udp only check adr='127.0.0.1'
+    Udp 只用于检查本机地址,如"127.0.0.1"、"192.168.1.10"等，port端口
 
 type ByteSize float64
+    ByteSize格式化内存或者流量数据为易读的格式
 
 const (
     KB ByteSize = 1 << (10 * iota)
@@ -61,9 +69,10 @@ type Free struct {
     free -o
 
 func GetFree() (*Free, error)
+    使用"free -o -b"命令
 
 func (m *Free) Format() *Free
-    格式化为易读的数据
+    内存信息转换
 
 func (m *Free) Real() float32
     未使用的内存加上缓存
@@ -75,6 +84,7 @@ type Hddtemp struct {
     Desc string
     Temp string
 }
+    硬盘温度
 
 func (t Hddtemp) String() string
 
@@ -83,15 +93,18 @@ type Hostname struct {
     Boot   time.Time
     Uptime string
 }
+    服务器主机名、启动时间以及运行时间
 
 func GetHostname() (*Hostname, error)
-    服务器主机名、启动时间以及运行时间:/proc/uptime
+    读取/proc/uptime，第一数值即系统运行时间，单位为秒(s)
 
 func (h *Hostname) String() string
 
 type Iostat string
+    获取系统的IO状态
 
 func GetIostat() (Iostat, error)
+    需要命令"iostat"
 
 type Load struct {
     Cpu  []Pcpu
@@ -99,6 +112,7 @@ type Load struct {
     Load *Loadavg
     IO   Iostat
 }
+    Load struct 包含了cpu、内存、系统负载、以及io状态
 
 func GetLoad() (*Load, error)
 
@@ -108,9 +122,10 @@ type Loadavg struct {
     La1, La5, La15 string
     Processes      string
 }
+    系统负载情况
 
 func GetLoadavg() (*Loadavg, error)
-    系统负载情况
+    读取/proc/loadavg
 
 func (la *Loadavg) Overload() bool
 
@@ -139,13 +154,15 @@ type Process struct {
     Name string
     Pid  string
 }
-    自定义的进程检查,
+    自定义的进程检查脚本
 
 func (p *Process) String() string
 
 type Sensor string
+    cpu温度
 
 func GetSensor() (Sensor, error)
+    需要命令sensors
 
 type Server struct {
     Hostname *Hostname
@@ -159,6 +176,7 @@ type Shell struct {
     Name, Path string
     Result     string
 }
+    方便以后使用shell脚本获取特定信息
 
 func (sh *Shell) String() string
 
@@ -174,7 +192,7 @@ type Tcp struct {
     Address string
     Status  bool
 }
-    tcp/udp 系统服务
+    tcp 服务
 
 func (t *Tcp) String() string
 
@@ -192,7 +210,7 @@ type TopProcess struct {
     Num    string
     Result string
 }
-    CPU使用率最高的进程
+    CPU或者MEM使用率最高的进程
 
 func (top *TopProcess) String() string
 
@@ -201,11 +219,10 @@ type Udp struct {
     Address string
     Status  bool
 }
+    udp服务
 
 func (u *Udp) String() string
 
 
 SUBDIRECTORIES
-
-	bin
 

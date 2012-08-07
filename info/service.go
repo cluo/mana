@@ -6,13 +6,14 @@ import (
 	"os/exec"
 )
 
-// tcp/udp 系统服务
+// tcp 服务
 type Tcp struct {
 	Name    string
 	Address string
 	Status  bool
 }
 
+// name服务名称，addr、port ip地址和端口
 func (a *Agent) Tcp(name, addr, port string) (*Tcp, error) {
 	tcp := new(Tcp)
 	tcp.Name = name
@@ -31,13 +32,14 @@ func (t *Tcp) String() string {
 	return fmt.Sprintf("%s:%s:%t", t.Name, t.Address, t.Status)
 }
 
+// udp服务
 type Udp struct {
 	Name    string
 	Address string
 	Status  bool
 }
 
-// Udp only check adr='127.0.0.1'
+// Udp 只用于检查本机地址,如"127.0.0.1"、"192.168.1.10"等，port端口
 func (a *Agent) Udp(name, addr, port string) (*Udp, error) {
 	udp := new(Udp)
 	udp.Name = name

@@ -16,7 +16,7 @@ func TestGetHostname(t *testing.T) {
 }
 
 func TestGetPcpus(t *testing.T) {
-	fmt.Println("- testing GetPcpu -")
+	fmt.Println("- testing GetPcpus -")
 	pcpu, err := GetPcpus()
 	if err != nil {
 		t.Error(err)
@@ -27,18 +27,6 @@ func TestGetPcpus(t *testing.T) {
 		} else {
 			fmt.Printf("cpu %d:\n%s\n", k-1, v)
 		}
-	}
-	fmt.Println("- end -")
-}
-
-func TestGetHddtemps(t *testing.T) {
-	fmt.Println("- testing GetHddtemps -")
-	hts, err := GetHddtemps()
-	if err != nil {
-		t.Error(err)
-	}
-	for k, v := range hts {
-		fmt.Println(k, v)
 	}
 	fmt.Println("- end -")
 }
@@ -59,7 +47,19 @@ func TestGetFree(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	fmt.Println(free.Format())
+	fmt.Println(free)
+	fmt.Println("- end -")
+}
+
+func TestGetHddtemps(t *testing.T) {
+	fmt.Println("- testing GetHddtemps -")
+	hts, err := GetHddtemps()
+	if err != nil {
+		t.Error(err)
+	}
+	for k, v := range hts {
+		fmt.Println(k, v)
+	}
 	fmt.Println("- end -")
 }
 
@@ -140,5 +140,5 @@ func TestAgentSysTem(t *testing.T) {
 	if err != nil {
 		t.Log(err)
 	}
-	fmt.Printf("%s", sys)
+	fmt.Printf("%s\n", sys)
 }

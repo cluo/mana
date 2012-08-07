@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+// 硬盘温度
 type Hddtemp struct {
 	Dev  string
 	Desc string
@@ -24,6 +25,7 @@ func newHddtemp(dev, des, temp string) Hddtemp {
 	return Hddtemp{dev, des, temp}
 }
 
+// 需要hddtemp以守护进程运行，如："sudo hddtemp -d /dev/sd[a-d]"
 func GetHddtemps() (temps []Hddtemp, err error) {
 	conn, err := net.DialTimeout("tcp", "127.0.0.1:7634", 2*time.Second)
 	if err != nil {
@@ -47,8 +49,10 @@ func GetHddtemps() (temps []Hddtemp, err error) {
 	return temps, nil
 }
 
+// cpu温度
 type Sensor string
 
+// 需要命令sensors
 func GetSensor() (Sensor, error) {
 	out, err := exec.Command("sensors").Output()
 	if err != nil {
@@ -79,7 +83,7 @@ func GetTemp() (*Temp, error) {
 	}
 	sensors, err := GetSensor()
 	if err != nil {
-		sensors = Sensor("May be virtual machine")
+		sensors = Sensor("No sensors found")
 	}
 	/*
 		    if err != nil {

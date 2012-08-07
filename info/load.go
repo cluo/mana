@@ -24,6 +24,7 @@ func (p Pcpu) String() string {
 	return fmt.Sprintf("us\tsy\twa\tidle\n%.2f\t%.2f\t%.2f\t%.2f", p.Us, p.Sy, p.Wa, p.Id)
 }
 
+// cpu使用率，多cpu的情况，第一个是平均值
 func GetPcpus() ([]Pcpu, error) {
 	var pcpus []Pcpu
 	all, err := exec.Command("/usr/bin/mpstat", "-P", "ALL").Output()
@@ -49,8 +50,10 @@ func GetPcpus() ([]Pcpu, error) {
 	return pcpus, nil
 }
 
+// 获取系统的IO状态
 type Iostat string
 
+// 需要命令"iostat"
 func GetIostat() (Iostat, error) {
 	out, err := exec.Command("iostat", "-kdx").Output()
 	if err != nil {
@@ -60,6 +63,7 @@ func GetIostat() (Iostat, error) {
 	return Iostat(out), nil
 }
 
+// 系统负载情况
 type Loadavg struct {
 	La1, La5, La15 string
 	Processes      string
@@ -69,7 +73,7 @@ func (l *Loadavg) String() string {
 	return fmt.Sprintf("%s %s %s\t%s", l.La1, l.La5, l.La15, l.Processes)
 }
 
-// 系统负载情况
+// 读取/proc/loadavg
 func GetLoadavg() (*Loadavg, error) {
 	b, err := ioutil.ReadFile("/proc/loadavg")
 	if err != nil {
@@ -91,6 +95,7 @@ func (la *Loadavg) Overload() bool {
 	return false
 }
 
+// ByteSize格式化内存或者流量数据为易读的格式
 type ByteSize float64
 
 const (
@@ -145,6 +150,7 @@ func (f *Free) String() string {
 	return s
 }
 
+// 使用"free -o -b"命令
 func GetFree() (*Free, error) {
 	var free = new(Free)
 	bts, err := exec.Command("free", "-o", "-b").Output()
@@ -177,7 +183,7 @@ func format(s string) ByteSize {
 	return ByteSize(bys)
 }
 
-// 格式化为易读的数据
+// 内存信息转换
 func (m *Free) Format() *Free {
 	var r, s = m.Mem, m.Swap
 
@@ -196,6 +202,7 @@ func (m *Free) Format() *Free {
 	return &Free{fr, fs}
 }
 
+// Load struct 包含了cpu、内存、系统负载、以及io状态
 type Load struct {
 	Cpu  []Pcpu
 	Free *Free
