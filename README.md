@@ -12,6 +12,8 @@ func GetAdapters() ([]Adapter, error)
 
 func GetHddtemps() (temps []Hddtemp, err error)
 
+func GetPcpus() ([]Pcpu, error)
+
 func NewLogger(name string) *log.Logger
 
 
@@ -30,13 +32,13 @@ type Agent struct{}
 
 func (a *Agent) Process(name string) (*Process, error)
 
+func (a *Agent) Shell(name, path string) (*Shell, error)
+
 func (a *Agent) System() (*Server, error)
 
 func (a *Agent) Tcp(name, addr, port string) (*Tcp, error)
 
-func (a *Agent) TopBycpu(n string) (*TopCpu, error)
-
-func (a *Agent) TopBymem(n string) (*TopMem, error)
+func (a *Agent) Top(n string, sort string) (*TopProcess, error)
 
 func (a *Agent) Udp(name, addr, port string) (*Udp, error)
     Udp only check adr='127.0.0.1'
@@ -92,13 +94,15 @@ type Iostat string
 func GetIostat() (Iostat, error)
 
 type Load struct {
-    Cpu  *Pcpu
+    Cpu  []Pcpu
     Free *Free
     Load *Loadavg
     IO   Iostat
 }
 
 func GetLoad() (*Load, error)
+
+func (l *Load) String() string
 
 type Loadavg struct {
     La1, La5, La15 string
@@ -129,9 +133,7 @@ type Pcpu struct {
 }
     CPU使用率
 
-func GetPcpu() (*Pcpu, error)
-
-func (p *Pcpu) String() string
+func (p Pcpu) String() string
 
 type Process struct {
     Name string
@@ -150,6 +152,15 @@ type Server struct {
     Load     *Load
     Temp     *Temp
 }
+
+func (s *Server) String() string
+
+type Shell struct {
+    Name, Path string
+    Result     string
+}
+
+func (sh *Shell) String() string
 
 type Swap struct {
     Total string
@@ -174,16 +185,16 @@ type Temp struct {
 
 func GetTemp() (*Temp, error)
 
-type TopCpu struct {
+func (temp *Temp) String() string
+
+type TopProcess struct {
+    Sort   string
     Num    string
     Result string
 }
     CPU使用率最高的进程
 
-type TopMem struct {
-    Num    string
-    Result string
-}
+func (top *TopProcess) String() string
 
 type Udp struct {
     Name    string
