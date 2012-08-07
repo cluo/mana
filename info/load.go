@@ -20,29 +20,33 @@ type Pcpu struct {
 	Id float64
 }
 
-func (p *Pcpu) String() string {
+func (p Pcpu) String() string {
 	return fmt.Sprintf("us\tsy\twa\tidle\n%.2f\t%.2f\t%.2f\t%.2f", p.Us, p.Sy, p.Wa, p.Id)
 }
 
-func GetPcpu() (*Pcpu, error) {
-	all, err := exec.Command("/usr/bin/mpstat").Output()
+func GetPcpus() ([]Pcpu, error) {
+	var pcpus []Pcpu
+	all, err := exec.Command("/usr/bin/mpstat", "-P", "ALL").Output()
 	if err != nil {
-		elog.Println("/usr/bin/mpstat", err)
+		elog.Println("/usr/bin/mpstat -P ALL", err)
 		return nil, err
 	}
 	s := strings.SplitAfter(string(all), "\n")
-	var cpu = s[3]
-	cur := strings.Fields(cpu)
-	/*
-	 *us,ni,sy := cur[2],cur[3],cur[4]
-	 *wa,hi,si := cur[5],cur[6],cur[7]
-	 *st,id := cur[8],cur[10]
-	 */
-	us, _ := strconv.ParseFloat(cur[2], 64)
-	sy, _ := strconv.ParseFloat(cur[4], 64)
-	wa, _ := strconv.ParseFloat(cur[5], 64)
-	id, _ := strconv.ParseFloat(cur[10], 64)
-	return &Pcpu{us, sy, wa, id}, nil
+	for i := 3; i <= numcpu+3; i++ {
+		var cpu = s[i]
+		cur := strings.Fields(cpu)
+		/*
+		 *us,ni,sy := cur[2],cur[3],cur[4]
+		 *wa,hi,si := cur[5],cur[6],cur[7]
+		 *st,id := cur[8],cur[10]
+		 */
+		us, _ := strconv.ParseFloat(cur[2], 64)
+		sy, _ := strconv.ParseFloat(cur[4], 64)
+		wa, _ := strconv.ParseFloat(cur[5], 64)
+		id, _ := strconv.ParseFloat(cur[10], 64)
+		pcpus = append(pcpus, Pcpu{us, sy, wa, id})
+	}
+	return pcpus, nil
 }
 
 type Iostat string
@@ -73,9 +77,8 @@ func GetLoadavg() (*Loadavg, error) {
 		return nil, err
 	}
 	s := strings.Fields(string(b))
-	ps := strings.SplitAfterN(s[3], "/", 2)[1]
 
-	return &Loadavg{s[0], s[1], s[2], ps}, nil
+	return &Loadavg{s[0], s[1], s[2], s[3]}, nil
 }
 
 func (la *Loadavg) Overload() bool {
@@ -194,14 +197,28 @@ func (m *Free) Format() *Free {
 }
 
 type Load struct {
-	Cpu  *Pcpu
+	Cpu  []Pcpu
 	Free *Free
 	Load *Loadavg
 	IO   Iostat
 }
 
+func (l *Load) String() string {
+	head := "System Load status\n"
+	var cpu string
+	for k, v := range l.Cpu {
+		if k == 0 {
+			cpu += fmt.Sprintf("CPU ALL:\n%s\n", v)
+			continue
+		}
+		cpu += fmt.Sprintf("CPU %d:\n%s\n", k-1, v)
+	}
+	return fmt.Sprintf("%s\nCPU status: %s\nMemory status:\n%s\n\nLoadavg: %s\n\nIostat:\n%s",
+		head, cpu, l.Free, l.Load, l.IO)
+}
+
 func GetLoad() (*Load, error) {
-	pcpu, err := GetPcpu()
+	pcpu, err := GetPcpus()
 	if err != nil {
 		return nil, errors.New("func GetPcpu() failed")
 	}

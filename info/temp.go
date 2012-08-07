@@ -3,6 +3,7 @@ package info
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"net"
 	"os/exec"
@@ -52,7 +53,7 @@ func GetSensor() (Sensor, error) {
 	out, err := exec.Command("sensors").Output()
 	if err != nil {
 		elog.Println("sensors:", err)
-		return "", errors.New("sensors command error")
+		return "", errors.New("sensors error")
 	}
 	return Sensor(out), nil
 }
@@ -62,6 +63,15 @@ type Temp struct {
 	Sensors Sensor
 }
 
+func (temp *Temp) String() string {
+	head := "System temperature\n"
+	var hdd string
+	for _, disk := range temp.Disks {
+		hdd += fmt.Sprintf("%s\n", disk)
+	}
+	return fmt.Sprintf("%s\nHddtemp:\n%s\nSensors:\n%s", head, hdd, temp.Sensors)
+}
+
 func GetTemp() (*Temp, error) {
 	disks, err := GetHddtemps()
 	if err != nil {
@@ -69,7 +79,12 @@ func GetTemp() (*Temp, error) {
 	}
 	sensors, err := GetSensor()
 	if err != nil {
-		return nil, errors.New("func GetSensor() failed")
+		sensors = Sensor("May be virtual machine")
 	}
+	/*
+		    if err != nil {
+				return nil, errors.New("func GetSensor() failed")
+			}
+	*/
 	return &Temp{disks, sensors}, nil
 }

@@ -29,6 +29,11 @@ type Server struct {
 	Temp     *Temp
 }
 
+func (s *Server) String() string {
+	res := s.Hostname.String() + "\n" + s.Load.String() + "\n" + s.Temp.String()
+	return res
+}
+
 type Agent struct{}
 
 func (a *Agent) System() (*Server, error) {
