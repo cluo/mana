@@ -1,6 +1,7 @@
 /*
    sensors命令:"lm-sensors"
    mpstat, iostat命令:"sysstat"
+   注:单词来自词典
 */
 package info
 
@@ -18,38 +19,54 @@ func NewLogger(name string) *log.Logger {
 	return log.New(file, "", log.LstdFlags)
 }
 
-var elog = log.New(os.Stderr, "", log.LstdFlags)
+var Timestr = "2006-01-02 15:04:05 -0700 MST"
 
-type Server struct {
+type System struct {
 	Hostname *Hostname
 	Load     *Load
 	Temp     *Temp
 }
 
-func (s *Server) String() string {
+func (s *System) String() string {
 	s.Load.Free = s.Load.Free.Format()
 	res := s.Hostname.String() + "\n" + s.Load.String() + "\n" + s.Temp.String()
 	return res
 }
 
-type Agent struct{}
+type Agent struct {
+	Log *log.Logger
+}
 
-func (a *Agent) System() (*Server, error) {
-	sys := new(Server)
-	host, err := GetHostname()
+func NewAgent(ll *log.Logger) *Agent {
+	return &Agent{ll}
+}
+
+var DefaultAgent = NewAgent(log.New(os.Stderr, "", log.LstdFlags))
+
+func (a *Agent) System() (*System, error) {
+	sys := new(System)
+	host, err := a.Hostname()
 	if err != nil {
-		return nil, errors.New("func GetHostname() failed")
+		return nil, errors.New("func Hostname() failed")
 	}
 	sys.Hostname = host
-	load, err := GetLoad()
+	load, err := a.Load()
 	if err != nil {
-		return nil, errors.New("func GetLoad() failed")
+		return nil, errors.New("func Load() failed")
 	}
 	sys.Load = load
-	temp, err := GetTemp()
+	temp, err := a.Temp()
 	if err != nil {
-		return nil, errors.New("func GetTemp() failed")
+		return nil, errors.New("func Temp() failed")
 	}
 	sys.Temp = temp
 	return sys, nil
+}
+
+func TopCpu() (*TopProcess, error) {
+	return DefaultAgent.Top("10", "cpu")
+}
+
+func TopMem() (*TopProcess, error) {
+	return DefaultAgent.Top("10", "cpu")
 }

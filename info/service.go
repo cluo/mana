@@ -20,7 +20,7 @@ func (a *Agent) Tcp(name, addr, port string) (*Tcp, error) {
 	tcp.Address = addr + ":" + port
 	conn, err := net.Dial("tcp", tcp.Address)
 	if err != nil {
-		elog.Println("service tcp:", name, err)
+		a.Log.Println("service tcp:", name, err)
 		return nil, err
 	}
 	defer conn.Close()
@@ -47,7 +47,7 @@ func (a *Agent) Udp(name, addr, port string) (*Udp, error) {
 	cmd := exec.Command("nc", "-zvu", addr, port)
 	_, err := cmd.Output()
 	if err != nil {
-		elog.Println("service udp:", name, "error")
+		a.Log.Println("service udp:", name, "error")
 		return nil, err
 	}
 	udp.Status = true

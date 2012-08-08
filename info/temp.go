@@ -26,17 +26,17 @@ func newHddtemp(dev, des, temp string) Hddtemp {
 }
 
 // 需要hddtemp以守护进程运行，如："sudo hddtemp -d /dev/sd[a-d]"
-func GetHddtemps() (temps []Hddtemp, err error) {
+func (a *Agent) Hddtemp() (temps []Hddtemp, err error) {
 	conn, err := net.DialTimeout("tcp", "127.0.0.1:7634", 2*time.Second)
 	if err != nil {
-		elog.Println("tcp://127.0.0.1:7634", err)
+		a.Log.Println("tcp://127.0.0.1:7634", err)
 		return
 	}
 	defer conn.Close()
 
 	bts, err := ioutil.ReadAll(conn)
 	if err != nil {
-		elog.Println("reading from 127.0.0.1:7634:", err)
+		a.Log.Println("reading from 127.0.0.1:7634:", err)
 		return
 	}
 
@@ -53,10 +53,10 @@ func GetHddtemps() (temps []Hddtemp, err error) {
 type Sensor string
 
 // 需要命令sensors
-func GetSensor() (Sensor, error) {
+func (a *Agent) Sensor() (Sensor, error) {
 	out, err := exec.Command("sensors").Output()
 	if err != nil {
-		elog.Println("sensors:", err)
+		a.Log.Println(`sensors error, try to run command "sensors"`)
 		return "", errors.New("sensors error")
 	}
 	return Sensor(out), nil
@@ -76,18 +76,18 @@ func (temp *Temp) String() string {
 	return fmt.Sprintf("%s\nHddtemp:\n%s\nSensors:\n%s", head, hdd, temp.Sensors)
 }
 
-func GetTemp() (*Temp, error) {
-	disks, err := GetHddtemps()
+func (a *Agent) Temp() (*Temp, error) {
+	disks, err := a.Hddtemp()
 	if err != nil {
-		return nil, errors.New("func GetHddtemps() failed")
+		return nil, errors.New("func Hddtemp() failed")
 	}
-	sensors, err := GetSensor()
+	sensors, err := a.Sensor()
 	if err != nil {
 		sensors = Sensor("No sensors found")
 	}
 	/*
 		    if err != nil {
-				return nil, errors.New("func GetSensor() failed")
+				return nil, errors.New("func Sensor() failed")
 			}
 	*/
 	return &Temp{disks, sensors}, nil

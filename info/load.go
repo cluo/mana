@@ -25,11 +25,11 @@ func (p Pcpu) String() string {
 }
 
 // cpu使用率，多cpu的情况，第一个是平均值
-func GetPcpus() ([]Pcpu, error) {
+func (a *Agent) Pcpu() ([]Pcpu, error) {
 	var pcpus []Pcpu
 	all, err := exec.Command("/usr/bin/mpstat", "-P", "ALL").Output()
 	if err != nil {
-		elog.Println("/usr/bin/mpstat -P ALL", err)
+		a.Log.Println("/usr/bin/mpstat -P ALL", err)
 		return nil, err
 	}
 	s := strings.SplitAfter(string(all), "\n")
@@ -54,10 +54,10 @@ func GetPcpus() ([]Pcpu, error) {
 type Iostat string
 
 // 需要命令"iostat"
-func GetIostat() (Iostat, error) {
+func (a *Agent) Iostat() (Iostat, error) {
 	out, err := exec.Command("iostat", "-kdx").Output()
 	if err != nil {
-		elog.Println("iostat -kdx:", err)
+		a.Log.Println("iostat -kdx:", err)
 		return "", errors.New("iostat command error")
 	}
 	return Iostat(out), nil
@@ -74,10 +74,10 @@ func (l *Loadavg) String() string {
 }
 
 // 读取/proc/loadavg
-func GetLoadavg() (*Loadavg, error) {
+func (a *Agent) Loadavg() (*Loadavg, error) {
 	b, err := ioutil.ReadFile("/proc/loadavg")
 	if err != nil {
-		elog.Println("reading /proc/loadavg:", err)
+		a.Log.Println("reading /proc/loadavg:", err)
 		return nil, err
 	}
 	s := strings.Fields(string(b))
@@ -151,11 +151,11 @@ func (f *Free) String() string {
 }
 
 // 使用"free -o -b"命令
-func GetFree() (*Free, error) {
+func (a *Agent) Free() (*Free, error) {
 	var free = new(Free)
 	bts, err := exec.Command("free", "-o", "-b").Output()
 	if err != nil {
-		elog.Println("free -ob:", err)
+		a.Log.Println("free -ob:", err)
 		return nil, err
 	}
 	lines := strings.Split(string(bts), "\n")
@@ -204,10 +204,10 @@ func (m *Free) Format() *Free {
 
 // Load struct 包含了cpu、内存、系统负载、以及io状态
 type Load struct {
-	Cpu  []Pcpu
-	Free *Free
-	Load *Loadavg
-	IO   Iostat
+	Cpu     []Pcpu
+	Free    *Free
+	Loadavg *Loadavg
+	IO      Iostat
 }
 
 func (l *Load) String() string {
@@ -221,25 +221,25 @@ func (l *Load) String() string {
 		cpu += fmt.Sprintf("CPU %d:\n%s\n", k-1, v)
 	}
 	return fmt.Sprintf("%s\nCPU status: %s\nMemory status:\n%s\n\nLoadavg: %s\n\nIostat:\n%s",
-		head, cpu, l.Free, l.Load, l.IO)
+		head, cpu, l.Free, l.Loadavg, l.IO)
 }
 
-func GetLoad() (*Load, error) {
-	pcpu, err := GetPcpus()
+func (a *Agent) Load() (*Load, error) {
+	pcpu, err := a.Pcpu()
 	if err != nil {
-		return nil, errors.New("func GetPcpu() failed")
+		return nil, errors.New("Pcpu failed")
 	}
-	free, err := GetFree()
+	free, err := a.Free()
 	if err != nil {
-		return nil, errors.New("func GetFree() failed")
+		return nil, errors.New("Free failed")
 	}
-	load, err := GetLoadavg()
+	loadavg, err := a.Loadavg()
 	if err != nil {
-		return nil, errors.New("func GetLoadavg() failed")
+		return nil, errors.New("Loadavg failed")
 	}
-	iostat, err := GetIostat()
+	iostat, err := a.Iostat()
 	if err != nil {
-		return nil, errors.New("func GetIostat() failed")
+		return nil, errors.New("Iostat failed")
 	}
-	return &Load{pcpu, free, load, iostat}, nil
+	return &Load{pcpu, free, loadavg, iostat}, nil
 }

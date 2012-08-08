@@ -24,7 +24,7 @@ func (a *Agent) Process(name string) (*Process, error) {
 	var cmd = "./bin/" + name
 	pid_b, err := exec.Command(cmd).Output()
 	if err != nil {
-		elog.Println("process", cmd, err)
+		a.Log.Println("process", cmd, err)
 		return nil, err
 	}
 	reply.Pid = string(pid_b)
@@ -60,7 +60,7 @@ func (a *Agent) Top(n string, sort string) (*TopProcess, error) {
 	reply.Num = n
 	ctop, err := exec.Command(cmd, n).Output()
 	if err != nil {
-		elog.Println("top", cmd, err)
+		a.Log.Println("top", cmd, err)
 		return nil, err
 	}
 	reply.Result = string(ctop)
@@ -81,7 +81,7 @@ func (a *Agent) Shell(name, path string) (*Shell, error) {
 		}
 		bts, err := exec.Command(path).Output()
 		if err != nil {
-			elog.Println("Shell", err)
+			a.Log.Println("Shell", err)
 			return nil, err
 		}
 		return &Shell{name, path, string(bts)}, nil

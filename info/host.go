@@ -14,14 +14,14 @@ type Hostname struct {
 }
 
 func (h *Hostname) String() string {
-	return h.Name + ":" + h.Boot.String() + ":" + h.Uptime
+	return h.Name + ":" + h.Boot.Format(Timestr) + ":" + h.Uptime
 }
 
 // 读取/proc/uptime，第一数值即系统运行时间，单位为秒(s)
-func GetHostname() (*Hostname, error) {
+func (a *Agent) Hostname() (*Hostname, error) {
 	b, err := ioutil.ReadFile("/proc/uptime")
 	if err != nil {
-		elog.Println("ReadFile /proc/uptime:", err)
+		a.Log.Println("ReadFile /proc/uptime:", err)
 		return nil, err
 	}
 	for i := 0; i < len(b); i++ {
@@ -34,14 +34,14 @@ func GetHostname() (*Hostname, error) {
 	t := string(b) + "s"
 	d, err := time.ParseDuration(t)
 	if err != nil {
-		elog.Println("time.ParseDuration:", err)
+		a.Log.Println("time.ParseDuration:", err)
 		return nil, err
 	}
 	boot := time.Now().Add(-d)
 
 	hostname, err := os.Hostname()
 	if err != nil {
-		elog.Println("hostname:", err)
+		a.Log.Println("hostname:", err)
 		return nil, err
 	}
 
