@@ -7,7 +7,6 @@ import (
 	"io/ioutil"
 	"mana/info"
 	"net/http"
-	_ "net/http/pprof"
 )
 
 var agent *info.Agent

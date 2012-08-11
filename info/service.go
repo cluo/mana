@@ -27,7 +27,7 @@ func (a *Agent) Tcp(name, addr, port string) *Service {
 		a.Log.Println("service tcp:", name, err)
 		return tcp
 	}
-	defer conn.Close()
+	conn.Close()
 	tcp.Status = true
 	return tcp
 }
