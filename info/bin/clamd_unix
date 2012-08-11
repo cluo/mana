@@ -1,0 +1,16 @@
+#!/bin/sh
+# check process running
+#
+
+CMD="clamd"
+#ARGS=""
+
+res=0
+
+pid=`ps -C $CMD --no-header -o pid` || res=1
+
+if [ $res -eq 0 ]; then
+    /bin/echo -n "$pid"
+fi
+
+exit $res

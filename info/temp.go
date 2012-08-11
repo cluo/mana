@@ -54,12 +54,12 @@ type Sensor string
 
 // 需要命令sensors
 func (a *Agent) Sensor() (Sensor, error) {
-	out, err := exec.Command("sensors").Output()
+	bts, err := exec.Command("sensors").Output()
 	if err != nil {
 		a.Log.Println(`sensors error, try to run command "sensors"`)
 		return "", errors.New("sensors error")
 	}
-	return Sensor(out), nil
+	return Sensor(bts), nil
 }
 
 type Temp struct {
@@ -68,7 +68,7 @@ type Temp struct {
 }
 
 func (temp *Temp) String() string {
-	head := "System temperature\n"
+	head := "System temperature"
 	var hdd string
 	for _, disk := range temp.Disks {
 		hdd += fmt.Sprintf("%s\n", disk)
@@ -77,18 +77,21 @@ func (temp *Temp) String() string {
 }
 
 func (a *Agent) Temp() (*Temp, error) {
-	disks, err := a.Hddtemp()
-	if err != nil {
-		return nil, errors.New("func Hddtemp() failed")
-	}
+	var templ = new(Temp)
 	sensors, err := a.Sensor()
 	if err != nil {
 		sensors = Sensor("No sensors found")
 	}
+	templ.Sensors = sensors
 	/*
 		    if err != nil {
 				return nil, errors.New("func Sensor() failed")
 			}
 	*/
-	return &Temp{disks, sensors}, nil
+	disks, err := a.Hddtemp()
+	if err != nil {
+		return templ, errors.New("func Hddtemp() failed")
+	}
+	templ.Disks = disks
+	return templ, nil
 }

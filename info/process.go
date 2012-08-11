@@ -3,7 +3,7 @@ package info
 import (
 	"errors"
 	"os/exec"
-	"path/filepath"
+	"strings"
 )
 
 // 自定义的进程检查脚本
@@ -19,16 +19,19 @@ func (p *Process) String() string {
 
 // 名称=name的脚本放置在bin目录下
 func (a *Agent) Process(name string) (*Process, error) {
-	var reply = new(Process)
-	reply.Name = name
+	if name == "" {
+		return nil, errors.New(`Process(name string) name == ""`)
+	}
+	var p = new(Process)
+	p.Name = name
 	var cmd = "./bin/" + name
-	pid_b, err := exec.Command(cmd).Output()
+	pid, err := exec.Command(cmd).Output()
 	if err != nil {
 		a.Log.Println("process", cmd, err)
-		return nil, err
+		return p, err
 	}
-	reply.Pid = string(pid_b)
-	return reply, nil
+	p.Pid = strings.TrimSpace(string(pid))
+	return p, nil
 }
 
 // CPU或者MEM使用率最高的进程
@@ -39,7 +42,7 @@ type TopProcess struct {
 }
 
 func (top *TopProcess) String() string {
-	s := "Top of processes " + top.Sort + ", " + top.Num + ":\n" + top.Result
+	s := top.Sort + "_" + top.Num + ":\n" + top.Result
 	return s
 }
 
@@ -55,38 +58,38 @@ func (a *Agent) Top(n string, sort string) (*TopProcess, error) {
 	} else {
 		return nil, errors.New(`sort must be "cpu" or "mem"`)
 	}
-	var reply = new(TopProcess)
-	reply.Sort = sort
-	reply.Num = n
-	ctop, err := exec.Command(cmd, n).Output()
+	var p = new(TopProcess)
+	p.Sort = sort
+	p.Num = n
+	top, err := exec.Command(cmd, n).Output()
 	if err != nil {
 		a.Log.Println("top", cmd, err)
-		return nil, err
+		return p, err
 	}
-	reply.Result = string(ctop)
-	return reply, nil
+	p.Result = string(top)
+	return p, nil
 }
 
 // 方便以后使用shell脚本获取特定信息
 type Shell struct {
-	Name, Path string
-	Result     string
+	Name   string
+	Result string
 }
 
 // name如果为""，使用filepath.Base(path)
-func (a *Agent) Shell(name, path string) (*Shell, error) {
-	if base := filepath.Base(path); base != "." {
-		if name == "" {
-			name = base
-		}
-		bts, err := exec.Command(path).Output()
-		if err != nil {
-			a.Log.Println("Shell", err)
-			return nil, err
-		}
-		return &Shell{name, path, string(bts)}, nil
+func (a *Agent) Shell(name string) (*Shell, error) {
+	if name == "" {
+		return nil, errors.New(`Shell(name string) name == ""`)
 	}
-	return nil, errors.New("Shell path error")
+	var cmd = "./bin/" + name
+	var sh = &Shell{Name: name}
+	b, err := exec.Command(cmd).Output()
+	if err != nil {
+		a.Log.Println("Shell", err)
+		return sh, err
+	}
+	sh.Result = string(b)
+	return sh, nil
 }
 
 func (sh *Shell) String() string {

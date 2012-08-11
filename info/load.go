@@ -14,14 +14,15 @@ var numcpu = runtime.NumCPU()
 
 // CPU使用率
 type Pcpu struct {
-	Us float64
-	Sy float64
-	Wa float64
-	Id float64
+	ID   string
+	Us   float64
+	Sy   float64
+	Wa   float64
+	Idle float64
 }
 
 func (p Pcpu) String() string {
-	return fmt.Sprintf("us\tsy\twa\tidle\n%.2f\t%.2f\t%.2f\t%.2f", p.Us, p.Sy, p.Wa, p.Id)
+	return fmt.Sprintf("ID\tus\tsy\twa\tidle\n%s\t%.2f\t%.2f\t%.2f\t%.2f", p.ID, p.Us, p.Sy, p.Wa, p.Idle)
 }
 
 // cpu使用率，多cpu的情况，第一个是平均值
@@ -37,15 +38,16 @@ func (a *Agent) Pcpu() ([]Pcpu, error) {
 		var cpu = s[i]
 		cur := strings.Fields(cpu)
 		/*
-		 *us,ni,sy := cur[2],cur[3],cur[4]
-		 *wa,hi,si := cur[5],cur[6],cur[7]
-		 *st,id := cur[8],cur[10]
-		 */
+			         *ID := cur[1]
+					 *us,ni,sy := cur[2],cur[3],cur[4]
+					 *wa,hi,si := cur[5],cur[6],cur[7]
+					 *st,idle := cur[8],cur[10]
+		*/
 		us, _ := strconv.ParseFloat(cur[2], 64)
 		sy, _ := strconv.ParseFloat(cur[4], 64)
 		wa, _ := strconv.ParseFloat(cur[5], 64)
-		id, _ := strconv.ParseFloat(cur[10], 64)
-		pcpus = append(pcpus, Pcpu{us, sy, wa, id})
+		idle, _ := strconv.ParseFloat(cur[10], 64)
+		pcpus = append(pcpus, Pcpu{cur[1], us, sy, wa, idle})
 	}
 	return pcpus, nil
 }
@@ -60,7 +62,8 @@ func (a *Agent) Iostat() (Iostat, error) {
 		a.Log.Println("iostat -kdx:", err)
 		return "", errors.New("iostat command error")
 	}
-	return Iostat(out), nil
+	str := strings.Replace(string(out), "\n\n", "\n", -1)
+	return Iostat(str), nil
 }
 
 // 系统负载情况
@@ -211,7 +214,7 @@ type Load struct {
 }
 
 func (l *Load) String() string {
-	head := "System Load status\n"
+	head := "System Load status"
 	var cpu string
 	for k, v := range l.Cpu {
 		if k == 0 {
@@ -225,21 +228,9 @@ func (l *Load) String() string {
 }
 
 func (a *Agent) Load() (*Load, error) {
-	pcpu, err := a.Pcpu()
-	if err != nil {
-		return nil, errors.New("Pcpu failed")
-	}
-	free, err := a.Free()
-	if err != nil {
-		return nil, errors.New("Free failed")
-	}
-	loadavg, err := a.Loadavg()
-	if err != nil {
-		return nil, errors.New("Loadavg failed")
-	}
-	iostat, err := a.Iostat()
-	if err != nil {
-		return nil, errors.New("Iostat failed")
-	}
-	return &Load{pcpu, free, loadavg, iostat}, nil
+	pcpu, err1 := a.Pcpu()
+	free, err2 := a.Free()
+	loadavg, err3 := a.Loadavg()
+	iostat, err4 := a.Iostat()
+	return &Load{pcpu, free, loadavg, iostat}, fmt.Errorf("%s,%s,%s,%s", err1, err2, err3, err4)
 }

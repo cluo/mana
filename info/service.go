@@ -6,54 +6,43 @@ import (
 	"os/exec"
 )
 
-// tcp 服务
-type Tcp struct {
+type Service struct {
 	Name    string
+	Net     string
 	Address string
 	Status  bool
 }
 
+func (s *Service) String() string {
+	return fmt.Sprintf("%s:%s:%s:%t", s.Name, s.Net, s.Address, s.Status)
+}
+
+// tcp 服务
 // name服务名称，addr、port ip地址和端口
-func (a *Agent) Tcp(name, addr, port string) (*Tcp, error) {
-	tcp := new(Tcp)
-	tcp.Name = name
-	tcp.Address = addr + ":" + port
+func (a *Agent) Tcp(name, addr, port string) *Service {
+	address := addr + ":" + port
+	var tcp = &Service{Name: name, Net: "tcp", Address: address}
 	conn, err := net.Dial("tcp", tcp.Address)
 	if err != nil {
 		a.Log.Println("service tcp:", name, err)
-		return nil, err
+		return tcp
 	}
 	defer conn.Close()
 	tcp.Status = true
-	return tcp, nil
-}
-
-func (t *Tcp) String() string {
-	return fmt.Sprintf("%s:%s:%t", t.Name, t.Address, t.Status)
+	return tcp
 }
 
 // udp服务
-type Udp struct {
-	Name    string
-	Address string
-	Status  bool
-}
-
 // Udp 只用于检查本机地址,如"127.0.0.1"、"192.168.1.10"等，port端口
-func (a *Agent) Udp(name, addr, port string) (*Udp, error) {
-	udp := new(Udp)
-	udp.Name = name
-	udp.Address = addr + ":" + port
+func (a *Agent) Udp(name, addr, port string) *Service {
+	address := addr + ":" + port
+	var udp = &Service{Name: name, Net: "udp", Address: address}
 	cmd := exec.Command("nc", "-zvu", addr, port)
 	_, err := cmd.Output()
 	if err != nil {
-		a.Log.Println("service udp:", name, "error")
-		return nil, err
+		a.Log.Println("service udp:", name, "down")
+		return udp
 	}
 	udp.Status = true
-	return udp, nil
-}
-
-func (u *Udp) String() string {
-	return fmt.Sprintf("%s:%s:%t", u.Name, u.Address, u.Status)
+	return udp
 }

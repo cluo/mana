@@ -48,7 +48,7 @@ func TestFree(t *testing.T) {
 func TestHddtemp(t *testing.T) {
 	hts, err := agent.Hddtemp()
 	if err != nil {
-		t.Error(err)
+		t.Log(err)
 	}
 	for k, v := range hts {
 		fmt.Println(k, v)
@@ -59,32 +59,23 @@ func TestProcess(t *testing.T) {
 	var name = "nginx_master"
 	proc, err := agent.Process(name)
 	if err != nil {
-		t.Error(err)
+		t.Log(err)
 	}
 	fmt.Println(proc)
 }
 
 func TestShell(t *testing.T) {
-	var name = "ports listening "
-	sh, err := agent.Shell(name, "./bin/netstat")
+	sh, err := agent.Shell("netstat")
 	if err != nil {
-		t.Error(err)
+		t.Log(err)
 	}
 	fmt.Println(sh)
 }
 
-func TestTcp(t *testing.T) {
-	tcp, err := agent.Tcp("hddtemp", "127.0.0.1", "7634")
-	if err != nil {
-		t.Log(err)
-	}
+func TestService(t *testing.T) {
+	tcp := agent.Tcp("hddtemp", "127.0.0.1", "7634")
 	fmt.Println(tcp)
-}
-func TestUdp(t *testing.T) {
-	udp, err := agent.Udp("snmp", "127.0.0.1", "161")
-	if err != nil {
-		t.Log(err)
-	}
+	udp := agent.Udp("snmp", "127.0.0.1", "161")
 	fmt.Println(udp)
 }
 
@@ -112,9 +103,5 @@ func TestTop(t *testing.T) {
 }
 
 func TestAgentSysTem(t *testing.T) {
-	sys, err := agent.System()
-	if err != nil {
-		t.Log(err)
-	}
-	fmt.Printf("%s\n", sys)
+	fmt.Printf("%s\n", agent.System())
 }

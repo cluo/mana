@@ -6,7 +6,6 @@
 package info
 
 import (
-	"errors"
 	"log"
 	"os"
 )
@@ -24,12 +23,20 @@ var Timestr = "2006-01-02 15:04:05 -0700 MST"
 type System struct {
 	Hostname *Hostname
 	Load     *Load
+	Traffic  []Traffic
 	Temp     *Temp
 }
 
 func (s *System) String() string {
 	s.Load.Free = s.Load.Free.Format()
-	res := s.Hostname.String() + "\n" + s.Load.String() + "\n" + s.Temp.String()
+	traffic := "system traffic\n"
+	for k, v := range s.Traffic {
+		traffic += v.String()
+		if k < len(s.Traffic)-1 {
+			traffic += "\n"
+		}
+	}
+	res := s.Hostname.String() + "\n" + s.Load.String() + "\n" + traffic + "\n" + s.Temp.String()
 	return res
 }
 
@@ -43,24 +50,12 @@ func NewAgent(ll *log.Logger) *Agent {
 
 var DefaultAgent = NewAgent(log.New(os.Stderr, "", log.LstdFlags))
 
-func (a *Agent) System() (*System, error) {
-	sys := new(System)
-	host, err := a.Hostname()
-	if err != nil {
-		return nil, errors.New("func Hostname() failed")
-	}
-	sys.Hostname = host
-	load, err := a.Load()
-	if err != nil {
-		return nil, errors.New("func Load() failed")
-	}
-	sys.Load = load
-	temp, err := a.Temp()
-	if err != nil {
-		return nil, errors.New("func Temp() failed")
-	}
-	sys.Temp = temp
-	return sys, nil
+func (a *Agent) System() *System {
+	host, _ := a.Hostname()
+	load, _ := a.Load()
+	temp, _ := a.Temp()
+	traffic, _ := a.Traffic()
+	return &System{host, load, traffic, temp}
 }
 
 func TopCpu() (*TopProcess, error) {
