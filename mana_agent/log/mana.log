@@ -23,3 +23,6 @@
 2012/08/11 16:16:33 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
 2012/08/11 16:16:33 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
 2012/08/11 16:16:33 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/12 10:18:03 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/12 11:44:35 sensors error, try to run command "sensors"
+2012/08/12 11:45:33 sensors error, try to run command "sensors"

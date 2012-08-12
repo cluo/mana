@@ -42,7 +42,7 @@ type TopProcess struct {
 }
 
 func (top *TopProcess) String() string {
-	s := top.Sort + "_" + top.Num + ":\n" + top.Result
+	s := top.Sort + "_" + top.Num + " (rsz: \"kilobytes\", vsz:\"Kib\")->:\n" + top.Result
 	return s
 }
 
