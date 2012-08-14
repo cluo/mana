@@ -1,4 +1,4 @@
-# -------- mana_agent data ---------
+# -------- mana_agent (use -i 参数) data ---------
 # /status
     主机名: debian
     启动时间: 2012-08-13 17:12:15 +0800 CST
