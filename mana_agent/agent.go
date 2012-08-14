@@ -271,7 +271,14 @@ func root(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "error_page", 301)
 		return
 	}
-	fmt.Fprintf(w, "%s\n%s\n", r.RemoteAddr, r.UserAgent())
+	var remote_address string
+	for i, remote := 0, r.RemoteAddr; i < len(remote); i++ {
+		if remote[i] == ':' {
+			remote_address = remote[:i]
+			break
+		}
+	}
+	fmt.Fprint(w, remote_address)
 }
 
 func init() {

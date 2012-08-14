@@ -1,5 +1,0 @@
-Linux 2.6.32-5-686 (debian) 	2012年08月10日 	_i686_	(2 CPU)
-
-Device:            tps   Blk_read/s   Blk_wrtn/s   Blk_read   Blk_wrtn
-sda               4.29       176.23        56.10     614694     195680
-

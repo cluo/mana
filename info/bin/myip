@@ -1,0 +1,4 @@
+#!/bin/sh
+
+ip=`curl -s ifconfig.me/ip| awk '{print $1}'`
+echo -n $ip
