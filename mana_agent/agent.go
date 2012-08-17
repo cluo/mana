@@ -4,12 +4,15 @@
 // /service 针对监听tcp和udp端口的服务检测，如/service?q=tcp|udp；
 // /process 检查进程pid，用于检测特定的服务；
 // /custom 可以编辑简单的脚本打印需要的信息；
-// /status 主要用来检查agent在线；
+// /stat 主要用来检查agent在线；
 // /top 查找top以及内存使用最多的10个进程；
 // /error_page ...
 package main
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/md5"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -32,11 +35,14 @@ type config struct {
 	process, shell []string
 }
 
-// 数据是否缩进为可读样式
-var indent = flag.Bool("i", false, "json strings indent")
-
-// info.Agent.Log 指定的日志路径，默认当前目录下的log/mana.log
-var logfile = flag.String("log", "./log/mana.log", "log path")
+var (
+	help = flag.Bool("h", false, "help infomation")
+	// 数据是否缩进为可读样式
+	indent   = flag.Bool("i", false, "enable indent to format the data")
+	iscrypto = flag.String("p", "", "the password to encrypt data")
+	// info.Agent.Log 指定的日志路径，默认当前目录下的log/mana.log
+	logfile = flag.String("log", "log/mana.log", "log path")
+)
 
 // 读取配置文件可以以及需要检查的服务，进程，脚本等
 func readFile(path string, v interface{}) {
@@ -52,12 +58,43 @@ func readFile(path string, v interface{}) {
 	}
 }
 
+func aesKey(s string) []byte {
+	hash := md5.New()
+	hash.Write([]byte(s))
+	return hash.Sum(nil)
+}
+
+var block cipher.Block
+
+func aesEncrypt(block cipher.Block, src []byte) []byte {
+	var dst = make([]byte, 16)
+	var fill = []byte("                ")
+	var src_len = len(src)
+	if src_len%16 != 0 {
+		src = append(src, fill[src_len%16:]...)
+	}
+	var enc []byte
+	for i := 0; i < src_len; i += 16 {
+		block.Encrypt(dst, src[i:i+16])
+		enc = append(enc, dst...)
+	}
+	return enc
+}
+
 // 格式化数据为json
 func tojson(v interface{}) ([]byte, error) {
+	var bs []byte
+	var err error
 	if *indent {
-		return json.MarshalIndent(v, "", "  ")
+		bs, err = json.MarshalIndent(v, "", "  ")
+	} else {
+		bs, err = json.Marshal(v)
 	}
-	return json.Marshal(v)
+	// 数据是否需要加密
+	if block != nil {
+		return aesEncrypt(block, bs), err
+	}
+	return bs, err
 }
 
 func system(w http.ResponseWriter, r *http.Request) {
@@ -158,16 +195,19 @@ func process(w http.ResponseWriter, r *http.Request) {
 				p, err := agent.Process(name)
 				if err != nil {
 					w.WriteHeader(503)
+					hEAD = true
 					fmt.Fprintf(w, "%s", err)
 				}
 				bs, err := tojson(p)
 				if err != nil {
+					// 是否以及返回状态码
 					if !hEAD {
 						w.WriteHeader(503)
 					}
 					fmt.Fprintf(w, "%s", err)
 					return
 				}
+				w.Header().Set("Mana-Status", "OK")
 				fmt.Fprintf(w, "%s", bs)
 				return
 			}
@@ -185,6 +225,8 @@ func custom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	query := r.URL.Query()
+	// url example:
+	// /custom?q="myip" ...
 	var name = query.Get("q")
 	switch name {
 	case "", "all":
@@ -208,8 +250,8 @@ func custom(w http.ResponseWriter, r *http.Request) {
 				sh, err := agent.Shell(name)
 				if err != nil {
 					w.WriteHeader(503)
-					fmt.Fprintf(w, "%s", err)
 					hEAD = true
+					fmt.Fprintf(w, "%s", err)
 				}
 				bs, err := tojson(sh)
 				if err != nil {
@@ -219,6 +261,7 @@ func custom(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintf(w, "%s", err)
 					return
 				}
+				w.Header().Set("Mana-Status", "OK")
 				fmt.Fprintf(w, "%s", bs)
 				return
 			}
@@ -229,7 +272,7 @@ func custom(w http.ResponseWriter, r *http.Request) {
 }
 
 // 主机运行时间以及loadavg
-func status(w http.ResponseWriter, r *http.Request) {
+func stat(w http.ResponseWriter, r *http.Request) {
 	h, err := agent.Hostname()
 	if err != nil {
 		w.WriteHeader(407)
@@ -237,14 +280,23 @@ func status(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	bootime := h.Boot.Format(info.Timestr)
-	fmt.Fprintf(w, "主机名: %s\n启动时间: %s\n已运行: %s", h.Name, bootime, h.Uptime)
-	fmt.Fprintln(w, "\n---------------------------------------------")
 	loadavg, err := agent.Loadavg()
 	if err != nil {
+		w.WriteHeader(407)
 		fmt.Fprintln(w, err)
 		return
 	}
-	fmt.Fprintf(w, "系统负载: %s", loadavg)
+	w.Header().Set("Mana-Status", "OK")
+	var s = fmt.Sprintf(`主机名: %s
+启动时间: %s
+已运行: %s
+---------------------------------------------
+系统负载: %s`, h.Name, bootime, h.Uptime, loadavg)
+	// 数据是否需要加密
+	if block != nil {
+		s = string(aesEncrypt(block, []byte(s)))
+	}
+	fmt.Fprintf(w, "%s", s)
 }
 
 func top10(w http.ResponseWriter, r *http.Request) {
@@ -262,13 +314,18 @@ func top10(w http.ResponseWriter, r *http.Request) {
 		}
 		fmt.Fprintf(w, "%s", err)
 	}
-	fmt.Fprintf(w, "cpu使用 %s\n内存使用 %s", top_cpu, top_mem)
+	w.Header().Set("Mana-Status", "OK")
+	var s = fmt.Sprintf("cpu使用 %s\n内存使用 %s", top_cpu, top_mem)
+	if block != nil {
+		s = string(aesEncrypt(block, []byte(s)))
+	}
+	fmt.Fprintf(w, "%s", s)
 }
 
 // 重定向所有不提供的目录到/error_page
 func root(w http.ResponseWriter, r *http.Request) {
 	if r.RequestURI != "/" {
-		http.Redirect(w, r, "error_page", 301)
+		http.NotFound(w, r)
 		return
 	}
 	var remote_address string
@@ -278,11 +335,19 @@ func root(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
+	w.Header().Set("Mana-Status", "OK")
 	fmt.Fprint(w, remote_address)
 }
 
 func init() {
 	flag.Parse()
+	if *iscrypto != "" {
+		var err error
+		block, err = aes.NewCipher(aesKey(*iscrypto))
+		if err != nil {
+			panic(err)
+		}
+	}
 	cnf = new(config)
 	agent = info.NewAgent(info.NewLogger(*logfile))
 	readFile("./etc/tcp", &cnf.tcp)
@@ -292,13 +357,17 @@ func init() {
 }
 
 func main() {
+	if *help {
+		// 打印帮助
+		flag.PrintDefaults()
+		return
+	}
 	http.HandleFunc("/custom", custom)
 	http.HandleFunc("/service", service)
 	http.HandleFunc("/system", system)
 	http.HandleFunc("/process", process)
-	http.HandleFunc("/status", status)
+	http.HandleFunc("/stat", stat)
 	http.HandleFunc("/top", top10)
-	http.HandleFunc("/error_page", http.NotFound)
 	http.HandleFunc("/", root)
 	err := http.ListenAndServe(":12345", nil)
 	//err := http.ListenAndServeTLS(":12345", "etc/cert.pem", "etc/key.pem", nil)

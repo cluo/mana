@@ -13,6 +13,10 @@ type Service struct {
 	Status  bool
 }
 
+func (s *Service) GetName() string {
+	return s.Name
+}
+
 func (s *Service) String() string {
 	return fmt.Sprintf("%s:%s:%s:%t", s.Name, s.Net, s.Address, s.Status)
 }

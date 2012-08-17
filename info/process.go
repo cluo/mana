@@ -12,6 +12,10 @@ type Process struct {
 	Pid  string
 }
 
+func (p *Process) GetName() string {
+	return p.Name
+}
+
 func (p *Process) String() string {
 	s := p.Name + ":" + p.Pid
 	return s
@@ -74,6 +78,10 @@ func (a *Agent) Top(n string, sort string) (*TopProcess, error) {
 type Shell struct {
 	Name   string
 	Result string
+}
+
+func (s *Shell) GetName() string {
+	return s.Name
 }
 
 // name如果为""，使用filepath.Base(path)

@@ -41,3 +41,46 @@
 2012/08/13 17:43:01 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
 2012/08/13 17:43:09 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
 2012/08/13 17:43:13 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/14 14:10:51 sensors error, try to run command "sensors"
+2012/08/15 12:41:31 sensors error, try to run command "sensors"
+2012/08/15 12:41:49 sensors error, try to run command "sensors"
+2012/08/15 14:06:28 sensors error, try to run command "sensors"
+2012/08/15 14:06:51 sensors error, try to run command "sensors"
+2012/08/15 14:41:54 sensors error, try to run command "sensors"
+2012/08/15 14:41:54 sensors error, try to run command "sensors"
+2012/08/15 14:42:17 sensors error, try to run command "sensors"
+2012/08/15 14:42:17 sensors error, try to run command "sensors"
+2012/08/15 14:42:45 sensors error, try to run command "sensors"
+2012/08/15 14:42:45 sensors error, try to run command "sensors"
+2012/08/15 14:43:03 sensors error, try to run command "sensors"
+2012/08/15 14:43:03 sensors error, try to run command "sensors"
+2012/08/15 14:43:26 sensors error, try to run command "sensors"
+2012/08/15 14:43:26 sensors error, try to run command "sensors"
+2012/08/15 14:44:38 sensors error, try to run command "sensors"
+2012/08/15 14:44:38 sensors error, try to run command "sensors"
+2012/08/15 15:47:59 sensors error, try to run command "sensors"
+2012/08/15 15:47:59 sensors error, try to run command "sensors"
+2012/08/15 15:51:01 sensors error, try to run command "sensors"
+2012/08/16 12:54:38 sensors error, try to run command "sensors"
+2012/08/16 13:01:14 sensors error, try to run command "sensors"
+2012/08/16 13:01:31 sensors error, try to run command "sensors"
+2012/08/16 13:02:02 sensors error, try to run command "sensors"
+2012/08/16 13:07:03 sensors error, try to run command "sensors"
+2012/08/16 13:07:23 sensors error, try to run command "sensors"
+2012/08/16 13:33:11 sensors error, try to run command "sensors"
+2012/08/16 14:39:56 sensors error, try to run command "sensors"
+2012/08/16 14:47:11 sensors error, try to run command "sensors"
+2012/08/16 14:59:02 sensors error, try to run command "sensors"
+2012/08/16 15:02:46 sensors error, try to run command "sensors"
+2012/08/16 15:03:01 sensors error, try to run command "sensors"
+2012/08/16 15:04:09 sensors error, try to run command "sensors"
+2012/08/16 15:05:02 sensors error, try to run command "sensors"
+2012/08/17 12:03:31 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/17 12:03:31 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/17 12:03:45 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/17 12:24:02 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/17 12:24:03 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/17 12:36:58 process ./bin/nginx_master exit status 1
+2012/08/17 16:18:56 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/17 16:18:56 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/17 16:18:56 service tcp: http dial tcp 127.0.0.1:80: connection refused

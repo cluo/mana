@@ -1,0 +1,14 @@
+{
+  "name": "localhost",
+  "computer": [
+    {
+      "address": "127.0.0.1:12345",
+      "ignore": false
+    },
+    {
+      "address": "192.168.56.101:12345",
+      "ignore": false
+    }
+  ]
+}
+
