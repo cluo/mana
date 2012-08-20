@@ -17,6 +17,10 @@ func (s *Service) GetName() string {
 	return s.Name
 }
 
+func (s *Service) Ok() bool {
+	return s.Status
+}
+
 func (s *Service) String() string {
 	return fmt.Sprintf("%s:%s:%s:%t", s.Name, s.Net, s.Address, s.Status)
 }

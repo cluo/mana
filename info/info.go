@@ -27,9 +27,13 @@ type System struct {
 	Temp     *Temp
 }
 
+/*
 type ByName interface {
 	GetName() string
+	Ok() bool
+	String() string
 }
+*/
 
 func (s *System) String() string {
 	s.Load.Free = s.Load.Free.Format()

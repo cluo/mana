@@ -1,12 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"json"
 	"mana/info"
 	"net/http"
-	"time"
 )
 
 type Computer struct {
@@ -24,15 +23,21 @@ func (co *Computer) URI() string {
 	return fmt.Sprintf("http://%s", co.Address)
 }
 
+type Retry struct {
+	URL    string
+	Class  string
+	Status bool
+}
+
 type Notify struct {
-	check chan string
-	warn  chan string
+	Retry chan Retry
+	Warn  chan string
 	err   chan error
 }
 
 func NewNotify() *Notify {
-	var redo, warn, err = make(chan string), make(chan string), make(chan error)
-	return &Notify{redo, warn, err}
+	var retry, warn, err = make(chan Retry), make(chan string), make(chan error)
+	return &Notify{retry, warn, err}
 }
 
 var notify = NewNotify()
@@ -40,7 +45,7 @@ var notify = NewNotify()
 func readResponse(url string) []byte {
 	resp, err := http.Get(url)
 	if err != nil {
-		notify.err <- fmt.Errorf("Server(%s) error: %s", co.Address, err)
+		notify.err <- fmt.Errorf("Server(%s) error: %s", url, err)
 		return nil
 	}
 	defer resp.Body.Close()
@@ -60,15 +65,15 @@ func readResponse(url string) []byte {
 }
 
 func (co *Computer) Status() {
-	resp, err := http.Head(co.URI())
-	var status bool
+	_, err := http.Head(co.URI())
+	status := false
 	if err != nil {
 		notify.err <- err
 	} else {
 		status = true
 	}
 	if co.status != status {
-		notify.redo <- co.URI()
+		notify.Retry <- Retry{co.URI(), "status", status}
 	}
 	co.status = status
 }
@@ -82,15 +87,16 @@ func (co *Computer) Stat() string {
 	return ""
 }
 
-func fromjson(b, v interface{}) error {
+func fromjson(b []byte, v interface{}) error {
 	if b != nil {
 		err := json.Unmarshal(b, v)
 		if err != nil {
-			notify.err <- fmt.Errorf("Data (%s) error: %s", urL, err)
+			notify.err <- fmt.Errorf("Data error: %s", err)
 			return err
 		}
+		return nil
 	}
-	return fmt.Errorf("Data []byte null")
+	return fmt.Errorf("Data null")
 }
 
 func (co *Computer) System() {
@@ -98,13 +104,14 @@ func (co *Computer) System() {
 		return
 	}
 	urL := co.URI() + "/system"
-	b := readResponse(url)
+	b := readResponse(urL)
 	var sy info.System
-	err := fromjson(b, sy)
+	err := fromjson(b, &sy)
 	if err != nil {
+		notify.err <- err
 		return
 	}
-	co.sys = sy
+	co.sys = &sy
 }
 
 func (co *Computer) Tcp() {
@@ -112,11 +119,12 @@ func (co *Computer) Tcp() {
 		return
 	}
 	// tcp check
-	urL := co.URI() + "/service?q=tcp&name=" + name
+	urL := co.URI() + "/service?q=tcp"
 	b := readResponse(urL)
 	var tcp []*info.Service
 	err := fromjson(b, &tcp)
 	if err != nil {
+		notify.err <- err
 		return
 	}
 	check_service_status(co.URI(), tcp, co.tcp)
@@ -128,41 +136,44 @@ func (co *Computer) Udp() {
 		return
 	}
 	// tcp check
-	urL := co.URI() + "/service?q=udp&name=" + name
+	urL := co.URI() + "/service?q=udp"
 	b := readResponse(urL)
 	var udp []*info.Service
 	err := fromjson(b, &udp)
 	if err != nil {
+		notify.err <- err
 		return
 	}
 	check_service_status(co.URI(), udp, co.udp)
 	co.udp = udp
 }
 
-func (co *Computer) Process(name string) {
+func (co *Computer) Process() {
 	if !co.status {
 		return
 	}
-	urL := co.URI() + "/process?q=" + name
+	urL := co.URI() + "/process"
 	b := readResponse(urL)
 	var pr []*info.Process
 	err := fromjson(b, &pr)
 	if err != nil {
+		notify.err <- err
 		return
 	}
-	check_process_status(co.URI, pr, co.proc)
+	check_process_status(co.URI(), pr, co.proc)
 	co.proc = pr
 }
 
-func (co *Computer) Shell(name string) {
+func (co *Computer) Shell() {
 	if !co.status {
 		return
 	}
-	urL := co.URI() + "/custom?q=" + name
-	b := readResponse(url)
+	urL := co.URI() + "/custom"
+	b := readResponse(urL)
 	var sh []*info.Shell
 	err := fromjson(b, &sh)
 	if err != nil {
+		notify.err <- err
 		return
 	}
 	check_shell_status(co.URI(), sh, co.sh)

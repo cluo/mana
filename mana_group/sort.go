@@ -3,54 +3,127 @@ package main
 import (
 	"fmt"
 	"mana/info"
+	"net/http"
 	"sort"
 )
 
-type byName []info.ByName
+type ServiceSlice []*info.Service
 
-func (n byName) Len()          { return len(s) }
-func (n byName) Swap(i, j int) { s[i], s[j] = s[j], s[i] }
-func (n byName) Less(i, j int) { return s[i].GetName() < s[j].GetName() }
+func (s ServiceSlice) Len() int           { return len(s) }
+func (s ServiceSlice) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
+func (s ServiceSlice) Less(i, j int) bool { return s[i].GetName() < s[j].GetName() }
+
+type ProcessSlice []*info.Process
+
+func (s ProcessSlice) Len() int           { return len(s) }
+func (s ProcessSlice) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
+func (s ProcessSlice) Less(i, j int) bool { return s[i].GetName() < s[j].GetName() }
+
+type ShellSlice []*info.Shell
+
+func (s ShellSlice) Len() int           { return len(s) }
+func (s ShellSlice) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
+func (s ShellSlice) Less(i, j int) bool { return s[i].GetName() < s[j].GetName() }
 
 func check_service_status(host string, now, old []*info.Service) {
 	if len(now) != len(old) {
-		return nil
+		return
 	}
-	sort.Sort(byName(now))
-	sort.Sort(byName(old))
+	sort.Sort(ServiceSlice(now))
+	sort.Sort(ServiceSlice(old))
 	for i := 0; i < len(now); i++ {
-		if now[i].Status == old[i].status {
+		if now[i].Status == old[i].Status {
 			continue
 		}
-		notify.redo <- fmt.Sprintf("%s/service?q=%s&name=%s",
-			host, now[i].Net, now[i].Name)
+		var retry = Retry{fmt.Sprintf("%s/service?q=%s&name=%s",
+			host, now[i].Net, now[i].Name), "service", now[i].Ok()}
+		notify.Retry <- retry
 	}
 }
 
 func check_process_status(host string, now, old []*info.Process) {
 	if len(now) != len(old) {
-		return nil
+		return
 	}
-	sort.Sort(byName(now))
-	sort.Sort(byName(old))
+	sort.Sort(ProcessSlice(now))
+	sort.Sort(ProcessSlice(old))
 	for i := 0; i < len(now); i++ {
 		if now[i].Pid == old[i].Pid {
 			continue
 		}
-		notify.redo <- fmt.Sprintf("%s/process?q=%s", host, now[i].Name)
+		var retry = Retry{fmt.Sprintf("%s/process?q=%s",
+			host, now[i].Name), "process", now[i].Ok()}
+		notify.Retry <- retry
 	}
 }
 
 func check_shell_status(host string, now, old []*info.Shell) {
-	if len(n) != len(o) {
-		return nil
+	if len(now) != len(old) {
+		return
 	}
-	sort.Sort(byName(now))
-	sort.Sort(byName(old))
-	for i := 0; i < len(n); i++ {
+	sort.Sort(ShellSlice(now))
+	sort.Sort(ShellSlice(old))
+	for i := 0; i < len(now); i++ {
 		if now[i].Result == old[i].Result {
 			continue
 		}
-		notify.redo <- fmt.Sprintf("%s/custom?q=%s", host, now[i].Name)
+		var retry = Retry{fmt.Sprintf("%s/custom?q=%s",
+			host, now[i].Name), "shell", now[i].Ok()}
+		notify.Retry <- retry
+	}
+}
+
+/*
+type Warning struct {
+    Email string `json:"email"`
+    Content string `json:"content"`
+}
+*/
+
+func check_if_warn(in <-chan Retry, out chan<- string) {
+	for retry := range in {
+		switch retry.Class {
+		case "status":
+			_, err := http.Head(retry.URL)
+			stat := false
+			if err != nil {
+				notify.err <- err
+			} else {
+				stat = true
+			}
+			if stat == retry.Status {
+				notify.Warn <- fmt.Sprintf("%s status changed: %t", retry.URL, stat)
+			}
+		case "service":
+			b := readResponse(retry.URL)
+			var service info.Service
+			err := fromjson(b, &service)
+			if err != nil {
+				continue
+			}
+			if retry.Status == service.Ok() {
+				notify.Warn <- fmt.Sprintf("%s: %s", retry.URL, service.String())
+			}
+		case "process":
+			b := readResponse(retry.URL)
+			var process info.Process
+			err := fromjson(b, &process)
+			if err != nil {
+				continue
+			}
+			if retry.Status == process.Ok() {
+				notify.Warn <- fmt.Sprintf("%s: %s", retry.URL, process.String())
+			}
+		case "shell":
+			b := readResponse(retry.URL)
+			var shell info.Shell
+			err := fromjson(b, &shell)
+			if err != nil {
+				continue
+			}
+			if retry.Status == shell.Ok() {
+				notify.Warn <- fmt.Sprintf("%s: %s", retry.URL, shell.String())
+			}
+		}
 	}
 }

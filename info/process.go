@@ -16,6 +16,13 @@ func (p *Process) GetName() string {
 	return p.Name
 }
 
+func (p *Process) Ok() bool {
+	if p.Pid != "" {
+		return true
+	}
+	return false
+}
+
 func (p *Process) String() string {
 	s := p.Name + ":" + p.Pid
 	return s
@@ -82,6 +89,13 @@ type Shell struct {
 
 func (s *Shell) GetName() string {
 	return s.Name
+}
+
+func (s *Shell) Ok() bool {
+	if s.Result != "" {
+		return true
+	}
+	return false
 }
 
 // name如果为""，使用filepath.Base(path)
