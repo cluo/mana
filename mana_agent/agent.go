@@ -1,12 +1,21 @@
-// mana_agent.go 是一个简单的http服务器，目前还没有对server的认证。
-// 主要的url：
-// /system 系统的基本系统，负载以及流量温度等；
-// /service 针对监听tcp和udp端口的服务检测，如/service?q=tcp|udp；
-// /process 检查进程pid，用于检测特定的服务；
-// /custom 可以编辑简单的脚本打印需要的信息；
-// /stat 主要用来检查agent在线；
-// /top 查找top以及内存使用最多的10个进程；
-// /error_page ...
+/*
+Package mana_agent 是一个简单的http服务器.
+
+Options:
+    -h=false: help infomation
+    -i=false: enable indent to format the data
+    -log="log/mana.log": log
+    -p="": the password to encrypt data
+
+主要的url:
+    /system 系统的基本系统，负载以及流量温度等；
+    /service 针对监听tcp和udp端口的服务检测，如/service?q=tcp|udp；
+    /process 检查进程pid，用于检测特定的服务；
+    /custom 可以编辑简单的脚本打印需要的信息；
+    /stat 主要用来检查agent在线；
+    /top 查找top以及内存使用最多的10个进程；
+    /error_page ...
+*/
 package main
 
 import (
@@ -24,12 +33,12 @@ import (
 var agent *info.Agent
 var cnf *config
 
-// tcp/udp 地址:端口
+//tcp/udp 地址:端口
 type Address struct {
 	Addr, Port string
 }
 
-// config 包含./etc/(tcp、udp、process、shell), 格式为json文本文件
+//config 包含./etc/(tcp、udp、process、shell), 格式为json文本文件
 type config struct {
 	tcp, udp       map[string]Address
 	process, shell []string
@@ -37,14 +46,14 @@ type config struct {
 
 var (
 	help = flag.Bool("h", false, "help infomation")
-	// 数据是否缩进为可读样式
+	//数据是否缩进为可读样式
 	indent   = flag.Bool("i", false, "enable indent to format the data")
 	iscrypto = flag.String("p", "", "the password to encrypt data")
-	// info.Agent.Log 指定的日志路径，默认当前目录下的log/mana.log
+	//info.Agent.Log 指定的日志路径，默认当前目录下的log/mana.log
 	logfile = flag.String("log", "log/mana.log", "log path")
 )
 
-// 读取配置文件可以以及需要检查的服务，进程，脚本等
+//读取配置文件需要检查的服务，进程，脚本等
 func readFile(path string, v interface{}) {
 	fs, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -63,9 +72,7 @@ func aesKey(s string) []byte {
 	hash.Write([]byte(s))
 	return hash.Sum(nil)
 }
-
-var block cipher.Block
-
+//golang json 结尾只能是' ','\n','\r','\t';
 func aesEncrypt(block cipher.Block, src []byte) []byte {
 	var dst = make([]byte, 16)
 	var fill = []byte("                ")
@@ -81,7 +88,9 @@ func aesEncrypt(block cipher.Block, src []byte) []byte {
 	return enc
 }
 
-// 格式化数据为json
+var block cipher.Block
+
+//格式化数据为json
 func tojson(v interface{}) ([]byte, error) {
 	var bs []byte
 	var err error
@@ -90,7 +99,7 @@ func tojson(v interface{}) ([]byte, error) {
 	} else {
 		bs, err = json.Marshal(v)
 	}
-	// 数据是否需要加密
+	//数据是否需要加密
 	if block != nil {
 		return aesEncrypt(block, bs), err
 	}
@@ -115,8 +124,8 @@ func udp(name, addr, port string) *info.Service {
 	return agent.Udp(name, addr, port)
 }
 
-// 对于/service?tcp|udp等，不设置name或者name为"all", 检查etc/tcp或者etc/udp指定的所有服务,
-// 如果name指定值，检查config.tcp或者config.udp，并返回json数据
+//对于/service?tcp|udp等，不设置name或者name为"all", 检查etc/tcp或者etc/udp指定的所有服务,
+//如果name指定值，检查config.tcp或者config.udp，并返回json数据
 func checkService(listen map[string]Address, fn func(string, string, string) *info.Service, name string) ([]byte, error) {
 	if len(listen) > 0 {
 		switch name {
@@ -164,7 +173,7 @@ func service(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// process etc/process config.process
+//process etc/process config.process
 func process(w http.ResponseWriter, r *http.Request) {
 	if len(cnf.process) == 0 {
 		w.WriteHeader(400)
@@ -200,7 +209,7 @@ func process(w http.ResponseWriter, r *http.Request) {
 				}
 				bs, err := tojson(p)
 				if err != nil {
-					// 是否以及返回状态码
+					//是否以返回状态码
 					if !hEAD {
 						w.WriteHeader(503)
 					}
@@ -217,7 +226,7 @@ func process(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// custom etc/shell config.shell
+//custom etc/shell config.shell
 func custom(w http.ResponseWriter, r *http.Request) {
 	if len(cnf.shell) == 0 {
 		w.WriteHeader(400)
@@ -225,8 +234,8 @@ func custom(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	query := r.URL.Query()
-	// url example:
-	// /custom?q="myip" ...
+	//url example:
+	//  /custom?q="myip" ...
 	var name = query.Get("q")
 	switch name {
 	case "", "all":
@@ -271,7 +280,7 @@ func custom(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// 主机运行时间以及loadavg
+//主机运行时间以及loadavg
 func stat(w http.ResponseWriter, r *http.Request) {
 	h, err := agent.Hostname()
 	if err != nil {
@@ -292,7 +301,7 @@ func stat(w http.ResponseWriter, r *http.Request) {
 已运行: %s
 ---------------------------------------------
 系统负载: %s`, h.Name, bootime, h.Uptime, loadavg)
-	// 数据是否需要加密
+	//数据是否需要加密
 	if block != nil {
 		s = string(aesEncrypt(block, []byte(s)))
 	}
@@ -322,7 +331,7 @@ func top10(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s", s)
 }
 
-// 重定向所有不提供的目录到/error_page
+//others 404
 func root(w http.ResponseWriter, r *http.Request) {
 	if r.RequestURI != "/" {
 		http.NotFound(w, r)
@@ -358,7 +367,7 @@ func init() {
 
 func main() {
 	if *help {
-		// 打印帮助
+		//打印帮助
 		flag.PrintDefaults()
 		return
 	}

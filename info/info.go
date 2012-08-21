@@ -1,7 +1,10 @@
 /*
-   sensors命令:"lm-sensors"
-   mpstat, iostat命令:"sysstat"
-   注:单词来自词典
+Package info 实现Linux对系统状态, 服务, 进程, 自定义内容的获取.
+
+Commands:
+    sensors命令:"lm-sensors"
+    mpstat, iostat命令:"sysstat"
+--
 */
 package info
 
