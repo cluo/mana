@@ -96,3 +96,159 @@
 2012/08/20 15:33:48 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
 2012/08/20 15:34:11 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
 2012/08/20 15:34:11 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:19:03 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:19:03 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:19:26 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:19:26 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:19:49 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:19:49 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:20:12 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:20:12 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:20:35 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:20:35 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:20:58 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:20:58 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:21:21 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:21:21 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:21:44 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:21:44 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:22:07 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:22:07 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:22:30 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:22:30 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:22:53 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:22:53 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:23:16 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:23:16 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:23:39 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:23:39 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:23:51 sensors error, try to run command "sensors"
+2012/08/23 10:23:51 sensors error, try to run command "sensors"
+2012/08/23 10:24:02 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:24:02 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:24:25 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:24:25 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:24:48 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:24:48 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:25:11 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:25:11 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:25:34 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:25:34 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:25:57 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:25:57 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:26:20 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:26:20 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:26:43 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:26:43 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:27:06 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:27:06 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:27:29 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:27:29 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:27:52 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:27:52 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:28:15 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:28:15 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:28:48 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:28:48 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:29:11 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:29:11 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:29:34 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:29:34 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:32:16 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:32:16 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:32:39 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:32:39 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:33:02 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:33:02 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:33:25 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:33:25 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:33:48 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:33:48 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:34:11 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:34:11 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:34:49 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:34:49 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:35:12 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:35:12 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:35:35 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:35:35 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:36:40 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 10:42:03 service tcp: godoc dial tcp 127.0.0.1:6060: connection refused
+2012/08/23 11:14:38 process ./bin/nginx_master exit status 1
+2012/08/23 11:14:38 process ./bin/nginx_master exit status 1
+2012/08/23 11:14:38 process ./bin/nginx_master exit status 1
+2012/08/23 11:14:39 process ./bin/nginx_master exit status 1
+2012/08/23 11:14:43 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:14:43 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:14:43 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:14:43 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:14:43 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:14:43 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:14:45 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:14:47 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:14:55 process ./bin/nginx_master exit status 1
+2012/08/23 11:14:55 process ./bin/nginx_master exit status 1
+2012/08/23 11:14:56 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:14:56 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:14:56 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:14:56 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:15:09 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:15:09 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:15:09 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:15:09 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:15:12 process ./bin/nginx_master exit status 1
+2012/08/23 11:15:12 process ./bin/nginx_master exit status 1
+2012/08/23 11:15:35 sensors error, try to run command "sensors"
+2012/08/23 11:15:35 sensors error, try to run command "sensors"
+2012/08/23 11:32:12 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:32:12 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:32:12 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:32:12 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:32:12 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:32:12 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:32:12 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:32:12 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:32:21 process ./bin/nginx_master exit status 1
+2012/08/23 11:32:21 process ./bin/nginx_master exit status 1
+2012/08/23 11:32:21 process ./bin/nginx_master exit status 1
+2012/08/23 11:32:21 process ./bin/nginx_master exit status 1
+2012/08/23 11:32:22 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:32:22 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:32:22 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:32:22 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:32:35 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:32:35 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:32:35 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:32:35 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:32:38 process ./bin/nginx_master exit status 1
+2012/08/23 11:32:38 process ./bin/nginx_master exit status 1
+2012/08/23 11:32:50 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:32:50 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:32:50 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:32:50 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:32:55 process ./bin/nginx_master exit status 1
+2012/08/23 11:32:55 process ./bin/nginx_master exit status 1
+2012/08/23 11:33:01 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:33:01 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:33:01 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:33:01 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:33:12 process ./bin/nginx_master exit status 1
+2012/08/23 11:33:12 process ./bin/nginx_master exit status 1
+2012/08/23 11:33:14 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:33:14 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:33:14 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:33:14 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:33:28 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:33:28 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:33:28 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:33:28 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:33:29 process ./bin/nginx_master exit status 1
+2012/08/23 11:33:29 process ./bin/nginx_master exit status 1
+2012/08/23 11:33:40 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:33:40 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:33:40 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/23 11:33:40 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/23 11:33:47 process ./bin/nginx_master exit status 1
+2012/08/23 11:33:47 process ./bin/nginx_master exit status 1
+2012/08/23 11:36:41 sensors error, try to run command "sensors"
+2012/08/23 11:36:41 sensors error, try to run command "sensors"

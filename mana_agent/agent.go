@@ -72,6 +72,7 @@ func aesKey(s string) []byte {
 	hash.Write([]byte(s))
 	return hash.Sum(nil)
 }
+
 //golang json 结尾只能是' ','\n','\r','\t';
 func aesEncrypt(block cipher.Block, src []byte) []byte {
 	var dst = make([]byte, 16)
@@ -350,7 +351,7 @@ func root(w http.ResponseWriter, r *http.Request) {
 
 func init() {
 	flag.Parse()
-	if *iscrypto != "" {
+	if *iscrypto != "" && len(*iscrypto) > 5 {
 		var err error
 		block, err = aes.NewCipher(aesKey(*iscrypto))
 		if err != nil {
@@ -371,6 +372,12 @@ func main() {
 		flag.PrintDefaults()
 		return
 	}
+
+	if len(*iscrypto) < 6 {
+		fmt.Println("密码长度最少为6位")
+		return
+	}
+	//
 	http.HandleFunc("/custom", custom)
 	http.HandleFunc("/service", service)
 	http.HandleFunc("/system", system)
@@ -379,7 +386,6 @@ func main() {
 	http.HandleFunc("/top", top10)
 	http.HandleFunc("/", root)
 	err := http.ListenAndServe(":12345", nil)
-	//err := http.ListenAndServeTLS(":12345", "etc/cert.pem", "etc/key.pem", nil)
 	if err != nil {
 		fmt.Println(err)
 		return

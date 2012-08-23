@@ -1,3 +1,10 @@
+/*
+Package mana_group 用来收集每个计算机的信息。
+
+就像一开始的目的，就是简单，只要是监控中的服务、进程不区分重要程度，统一查询时间间隔。
+
+我们要做的只是指定group中需要监控那些计算机，至于服务器需要监控的进程或者服务，只在agent中设置，这方面具体看mana_agent。
+*/
 package main
 
 import (
@@ -9,12 +16,11 @@ import (
 )
 
 var (
-	sys_time  = 311 * time.Second
-	srv_time  = 23 * time.Second
-	proc_time = 29 * time.Second
-	//sh_time      = 181 * time.Second
-	sh_time      = 31 * time.Second
-	running_time = 5 * time.Second
+	sys_time     = 311 * time.Second
+	srv_time     = 29 * time.Second
+	proc_time    = 37 * time.Second
+	sh_time      = 47 * time.Second
+	running_time = 11 * time.Second
 )
 
 var help = flag.Bool("h", false, "help")
@@ -48,7 +54,7 @@ func main() {
 		sh      = time.Tick(sh_time)
 		running = time.Tick(running_time)
 	)
-
+	//重新检查具体信息并判断是否需要产生提醒
 	go check_if_warn(notify.Retry, notify.Warn)
 
 	go func() {
@@ -61,7 +67,7 @@ func main() {
 			}
 		}
 	}()
-
+	//组成员检查
 	for {
 		select {
 		case <-running:

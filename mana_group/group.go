@@ -8,15 +8,17 @@ import (
 	"net/http"
 )
 
+//组中所需检查的服务器信息，"address"必需给出;
 type Computer struct {
 	Address string `json:"address"`
-	Ignore  bool   `json:"ignore"`
-	status  bool
-	sys     *info.System
-	tcp     []*info.Service
-	udp     []*info.Service
-	proc    []*info.Process
-	sh      []*info.Shell
+	//"ignore"若为true，则跳过system信息查询
+	Ignore bool `json:"ignore"`
+	status bool
+	sys    *info.System
+	tcp    []*info.Service
+	udp    []*info.Service
+	proc   []*info.Process
+	sh     []*info.Shell
 }
 
 func (co *Computer) URI() string {
@@ -29,6 +31,7 @@ type Retry struct {
 	Status bool
 }
 
+//分别是重新检查，状态变更确认及提醒，错误记录
 type Notify struct {
 	Retry chan Retry
 	Warn  chan string
@@ -42,6 +45,7 @@ func NewNotify() *Notify {
 
 var notify = NewNotify()
 
+//通过http协议获取数据
 func readResponse(url string) []byte {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -58,6 +62,7 @@ func readResponse(url string) []byte {
 		notify.err <- fmt.Errorf("Get(%s) error: Mana-Status must be \"Ok\"", url)
 		return nil
 	}
+	//aes解密
 	if block != nil {
 		return aesDecrypt(block, b)
 	}
@@ -67,9 +72,7 @@ func readResponse(url string) []byte {
 func (co *Computer) Status() {
 	_, err := http.Head(co.URI())
 	status := false
-	if err != nil {
-		notify.err <- err
-	} else {
+	if err == nil {
 		status = true
 	}
 	if co.status != status {
@@ -79,7 +82,7 @@ func (co *Computer) Status() {
 }
 
 func (co *Computer) Stat() string {
-	urL := co.Address + "/status"
+	urL := co.Address + "/stat"
 	b := readResponse(urL)
 	if b != nil {
 		return string(b)
@@ -100,7 +103,7 @@ func fromjson(b []byte, v interface{}) error {
 }
 
 func (co *Computer) System() {
-	if !co.status {
+	if !co.status || co.Ignore {
 		return
 	}
 	urL := co.URI() + "/system"
@@ -109,6 +112,7 @@ func (co *Computer) System() {
 	err := fromjson(b, &sy)
 	if err != nil {
 		notify.err <- err
+		co.sys = nil
 		return
 	}
 	co.sys = &sy
@@ -125,6 +129,7 @@ func (co *Computer) Tcp() {
 	err := fromjson(b, &tcp)
 	if err != nil {
 		notify.err <- err
+		co.tcp = nil
 		return
 	}
 	check_service_status(co.URI(), tcp, co.tcp)
@@ -142,6 +147,7 @@ func (co *Computer) Udp() {
 	err := fromjson(b, &udp)
 	if err != nil {
 		notify.err <- err
+		co.udp = nil
 		return
 	}
 	check_service_status(co.URI(), udp, co.udp)
@@ -158,6 +164,7 @@ func (co *Computer) Process() {
 	err := fromjson(b, &pr)
 	if err != nil {
 		notify.err <- err
+		co.proc = nil
 		return
 	}
 	check_process_status(co.URI(), pr, co.proc)
@@ -174,6 +181,7 @@ func (co *Computer) Shell() {
 	err := fromjson(b, &sh)
 	if err != nil {
 		notify.err <- err
+		co.sh = nil
 		return
 	}
 	check_shell_status(co.URI(), sh, co.sh)
