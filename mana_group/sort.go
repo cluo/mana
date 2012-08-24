@@ -90,7 +90,7 @@ func check_if_warn(in <-chan Retry, out chan<- string) {
 				stat = true
 			}
 			if stat == retry.Status {
-				notify.Warn <- fmt.Sprintf("Warn:[%s],URL: %s\nContent:\nstatus changed %t",
+				notify.Warn <- fmt.Sprintf("Warn:[%s] URL: %s\nContent:\nstatus changed %t",
 					retry.Class, retry.URL, stat)
 			}
 		case "service":

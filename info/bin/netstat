@@ -4,3 +4,5 @@
 # wqt.acc@gmail.com
     #$1 ~ /tcp|udp/ { print $1,$4,$5}';
 netstat -ltun |awk '$1 ~ /tcp|udp/ { print $1,$4}'
+
+exit 0

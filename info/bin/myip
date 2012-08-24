@@ -2,3 +2,5 @@
 
 ip=`curl --connect-timeout 2 -s ifconfig.me/ip| awk '{print $1}'`
 echo -n $ip
+
+exit 0

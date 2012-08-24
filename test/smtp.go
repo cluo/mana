@@ -1,0 +1,1 @@
+../mana_group/smtp.go

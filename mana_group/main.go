@@ -12,6 +12,7 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"net/smtp"
 	"time"
 )
 
@@ -24,10 +25,32 @@ var (
 )
 
 var help = flag.Bool("h", false, "help")
+var mail_warn = flag.Bool("mail", false, "send mail when status changed")
 
 type Group struct {
 	Name     string      `json:"name"`
 	Computer []*Computer `json:"computer"`
+}
+
+func warn_print(mu *MailUser, auth smtp.Auth) {
+	for {
+		select {
+		case warn := <-notify.Warn:
+			if *mail_warn {
+				go func() {
+					addr := mu.Host + ":" + mu.Port
+					err := smtp.SendMail(addr, auth, mu.Username,
+						mu.To, warn_message(mu, warn))
+					if err != nil {
+						notify.err <- err
+					}
+				}()
+			}
+			fmt.Println(warn)
+		case err := <-notify.err:
+			fmt.Println(err)
+		}
+	}
 }
 
 func main() {
@@ -54,19 +77,11 @@ func main() {
 		sh      = time.Tick(sh_time)
 		running = time.Tick(running_time)
 	)
+
+	var mu = NewMailUser("etc/mail")
 	//重新检查具体信息并判断是否需要产生提醒
 	go check_if_warn(notify.Retry, notify.Warn)
-
-	go func() {
-		for {
-			select {
-			case warn := <-notify.Warn:
-				fmt.Println(warn)
-			case err := <-notify.err:
-				fmt.Println(err)
-			}
-		}
-	}()
+	go warn_print(mu, smtp_auth(mu))
 	//组成员检查
 	for {
 		select {

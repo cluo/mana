@@ -252,3 +252,137 @@
 2012/08/23 11:33:47 process ./bin/nginx_master exit status 1
 2012/08/23 11:36:41 sensors error, try to run command "sensors"
 2012/08/23 11:36:41 sensors error, try to run command "sensors"
+2012/08/24 12:43:22 sensors error, try to run command "sensors"
+2012/08/24 13:47:08 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 13:47:08 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 13:47:08 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 13:47:08 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 13:47:08 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 13:47:08 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 13:47:08 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 13:47:08 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 13:47:19 process ./bin/nginx_master exit status 1
+2012/08/24 13:47:19 process ./bin/nginx_master exit status 1
+2012/08/24 13:47:19 process ./bin/nginx_master exit status 1
+2012/08/24 13:47:19 process ./bin/nginx_master exit status 1
+2012/08/24 13:47:37 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 13:47:37 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 13:47:37 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 13:47:37 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 13:47:56 process ./bin/nginx_master exit status 1
+2012/08/24 13:47:56 process ./bin/nginx_master exit status 1
+2012/08/24 13:48:06 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 13:48:06 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 13:48:06 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 13:48:06 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 13:49:25 sensors error, try to run command "sensors"
+2012/08/24 13:49:25 sensors error, try to run command "sensors"
+2012/08/24 13:51:47 process ./bin/nginx_master exit status 1
+2012/08/24 13:51:49 process ./bin/nginx_master exit status 1
+2012/08/24 13:51:51 process ./bin/nginx_master exit status 1
+2012/08/24 13:51:53 process ./bin/nginx_master exit status 1
+2012/08/24 13:51:54 process ./bin/nginx_master exit status 1
+2012/08/24 13:51:59 process ./bin/nginx_master exit status 1
+2012/08/24 13:52:17 process ./bin/nginx_master exit status 1
+2012/08/24 13:52:47 process ./bin/clamd_unix exit status 1
+2012/08/24 13:54:57 process ./bin/clamd_unix exit status 1
+2012/08/24 14:00:57 process ./bin/nginx_master exec: "./bin/nginx_master": stat ./bin/nginx_master: no such file or directory
+2012/08/24 14:01:03 process ./bin/nginx_master exec: "./bin/nginx_master": stat ./bin/nginx_master: no such file or directory
+2012/08/24 14:01:10 process ./bin/nginx_master exec: "./bin/nginx_master": stat ./bin/nginx_master: no such file or directory
+2012/08/24 14:01:20 process ./bin/nginx_master exec: "./bin/nginx_master": stat ./bin/nginx_master: no such file or directory
+2012/08/24 14:01:27 process ./bin/nginx_master exec: "./bin/nginx_master": stat ./bin/nginx_master: no such file or directory
+2012/08/24 14:05:10 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:05:10 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:05:10 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:05:10 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:05:39 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:05:39 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:05:39 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:05:39 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:06:08 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:06:08 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:06:08 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:06:08 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:06:37 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:06:37 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:06:37 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:06:37 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:07:06 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:07:06 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:07:06 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:07:06 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:08:03 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:08:03 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:08:03 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:08:03 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:08:32 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:08:32 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:08:32 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:08:32 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:09:01 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:09:01 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:09:01 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:09:01 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:09:30 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:09:30 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:09:30 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:09:30 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:09:59 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:09:59 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:09:59 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:09:59 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:10:45 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:10:45 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:10:45 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:10:45 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:10:46 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:10:46 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:13:10 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:13:10 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:13:10 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:13:10 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:13:10 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:13:10 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:13:10 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:13:10 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:13:39 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:13:39 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:13:39 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:13:39 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:14:08 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:14:08 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:14:08 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:14:08 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:14:37 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:14:37 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:14:37 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:14:37 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:15:06 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:15:06 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:15:06 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:15:06 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:15:25 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:15:25 service tcp: amavisd dial tcp 127.0.0.1:10024: connection refused
+2012/08/24 14:15:25 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:15:27 sensors error, try to run command "sensors"
+2012/08/24 14:15:27 sensors error, try to run command "sensors"
+2012/08/24 14:15:35 service tcp: amavisd dial tcp 127.0.0.1:10024: connection refused
+2012/08/24 14:15:35 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:15:35 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:15:35 service tcp: amavisd dial tcp 127.0.0.1:10024: connection refused
+2012/08/24 14:15:35 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:15:35 service tcp: amavisd dial tcp 127.0.0.1:10024: connection refused
+2012/08/24 14:15:35 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:15:35 service tcp: amavisd dial tcp 127.0.0.1:10024: connection refused
+2012/08/24 14:16:04 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:16:04 service tcp: amavisd dial tcp 127.0.0.1:10024: connection refused
+2012/08/24 14:16:04 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:16:04 service tcp: amavisd dial tcp 127.0.0.1:10024: connection refused
+2012/08/24 14:16:04 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:16:04 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:18:26 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:18:26 service tcp: amavisd dial tcp 127.0.0.1:10024: connection refused
+2012/08/24 14:18:26 service tcp: https dial tcp 192.168.56.101:443: connection refused
+2012/08/24 14:18:26 service tcp: http dial tcp 127.0.0.1:80: connection refused
+2012/08/24 14:18:26 service tcp: amavisd dial tcp 127.0.0.1:10024: connection refused
+2012/08/24 14:18:26 service tcp: https dial tcp 192.168.56.101:443: connection refused

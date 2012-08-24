@@ -14,4 +14,4 @@ if [ $res -eq 0 ]; then
     /bin/echo -n "$pid"
 fi
 
-exit $res
+exit 0

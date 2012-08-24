@@ -373,7 +373,7 @@ func main() {
 		return
 	}
 
-	if len(*iscrypto) < 6 {
+	if *iscrypto != "" && len(*iscrypto) < 6 {
 		fmt.Println("密码长度最少为6位")
 		return
 	}
