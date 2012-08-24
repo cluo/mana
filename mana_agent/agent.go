@@ -1,5 +1,5 @@
 /*
-Package mana_agent 是一个简单的http服务器.
+mana_agent 是一个简单的http服务器.
 
 Options:
     -h=false: help infomation

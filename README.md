@@ -1,3 +1,8 @@
+# -------- mana_group ----------------------------
+# -h
+# -p
+# -mail
+
 # -------- mana_agent (use -i 参数) data ---------
 # /status
     主机名: debian
