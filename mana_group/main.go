@@ -18,7 +18,7 @@ import (
 )
 
 var (
-	sys_time     = 311 * time.Second
+	sys_time     = 300 * time.Second
 	srv_time     = 29 * time.Second
 	proc_time    = 37 * time.Second
 	sh_time      = 47 * time.Second

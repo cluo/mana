@@ -7,6 +7,7 @@ import (
 	"net/smtp"
 	"time"
 )
+
 //
 type MailUser struct {
 	Identity string
@@ -40,6 +41,7 @@ func NewMailUser(p string) *MailUser {
 func smtp_auth(mu *MailUser) smtp.Auth {
 	return smtp.PlainAuth(mu.Identity, mu.Username, mu.Password, mu.Host)
 }
+
 //对于使用邮件过滤接收者的邮箱，需要设置To: <user@domain>,...
 //同时添加From:<from@domain>
 //Date: time.Now().Format(time.RFC1123Z) 

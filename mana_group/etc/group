@@ -6,7 +6,7 @@
     },
     {
       "address": "192.168.56.101:12345",
-      "ignore": false
+      "ignore": true
     }
   ]
 }

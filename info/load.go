@@ -88,14 +88,9 @@ func (a *Agent) Loadavg() (*Loadavg, error) {
 	return &Loadavg{s[0], s[1], s[2], s[3]}, nil
 }
 
-func (la *Loadavg) Overload() bool {
-	n := float64(numcpu)
-	la1, _ := strconv.ParseFloat(la.La1, 32)
+func (la *Loadavg) Load5() float64 {
 	la5, _ := strconv.ParseFloat(la.La5, 32)
-	if la5 > 2*n && la1 > n+1 {
-		return true
-	}
-	return false
+	return la5
 }
 
 // ByteSize格式化内存或者流量数据为易读的格式
@@ -170,7 +165,7 @@ func (a *Agent) Free() (*Free, error) {
 }
 
 // 未使用的内存加上缓存 
-func (m *Free) Real() float32 {
+func (m *Free) Real() float64 {
 	r := m.Mem
 	free, _ := strconv.ParseFloat(r.Free, 32)
 	buffers, _ := strconv.ParseFloat(r.Buffers, 32)
@@ -178,7 +173,12 @@ func (m *Free) Real() float32 {
 
 	rf := free + buffers + cached
 
-	return float32(rf)
+	return rf
+}
+
+func (m *Free) Total() float64 {
+	total, _ := strconv.ParseFloat(m.Mem.Total, 32)
+	return total
 }
 
 func format(s string) ByteSize {

@@ -74,11 +74,11 @@ func main() {
 203.208.46.170  2-focus-opensocial.googleusercontent.com
 203.208.46.170  2-open-opensocial.googleusercontent.com
 203.208.47.1    3.docs.google.com`
-	log.Printf("base 16 message: %d\n%x\n", len(message),message)
-	log.Printf("string message: %d\n%s\n", len(message),message)
+	log.Printf("base 16 message: %d\n%x\n", len(message), message)
+	log.Printf("string message: %d\n%s\n", len(message), message)
 	msg_enc := aesEncrypt(block, []byte(message))
-	log.Printf("base 16 msg_enc: %d\n%x\n", len(msg_enc),msg_enc)
+	log.Printf("base 16 msg_enc: %d\n%x\n", len(msg_enc), msg_enc)
 	msg_dec := aesDecrypt(block, msg_enc)
-	log.Printf("base 16 msg_dec: %d\n%x\n", len(msg_dec),msg_dec)
-	log.Printf("string message: %d\n%s\n", len(msg_dec),msg_dec)
+	log.Printf("base 16 msg_dec: %d\n%x\n", len(msg_dec), msg_dec)
+	log.Printf("string message: %d\n%s\n", len(msg_dec), msg_dec)
 }

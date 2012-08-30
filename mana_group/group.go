@@ -115,6 +115,11 @@ func (co *Computer) System() {
 		co.sys = nil
 		return
 	}
+	if co.sys != nil {
+		check_sys_load(co.Address, sy.Load, co.sys.Load)
+		check_sys_temp(co.Address, sy.Temp, co.sys.Temp)
+	}
+	//check_sys_temp(co.Address, sy.Temp, co.sys.Temp)
 	co.sys = &sy
 }
 
