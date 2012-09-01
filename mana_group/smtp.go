@@ -25,15 +25,15 @@ var (
 	date    = time.Now().Format(time.RFC1123Z)
 )
 
-func NewMailUser(p string) *MailUser {
-	b, err := ioutil.ReadFile(p)
+func NewMailUser(file string) *MailUser {
+	b, err := ioutil.ReadFile(file)
 	if err != nil {
-		panic("read \"etc/mail\" failed")
+		panic("read \"mail\" failed")
 	}
 	var mu MailUser
 	err = json.Unmarshal(b, &mu)
 	if err != nil {
-		panic("json.Unmarshal from \"etc/mail\" failed")
+		panic("json.Unmarshal from \"mail\" failed")
 	}
 	return &mu
 }

@@ -25,8 +25,11 @@ var (
 	running_time = 11 * time.Second
 )
 
-var help = flag.Bool("h", false, "help")
-var mail_warn = flag.Bool("mail", false, "send mail when status changed")
+var (
+	help       = flag.Bool("h", false, "help")
+	config_dir = flag.String("c", "etc/mail", "config files path")
+	mail_warn  = flag.Bool("mail", false, "send mail when status changed")
+)
 
 type Group struct {
 	Name     string      `json:"name"`
@@ -59,7 +62,8 @@ func main() {
 		flag.PrintDefaults()
 		return
 	}
-	group_bytes, err := ioutil.ReadFile("etc/group")
+	config_group := *config_dir + "/group"
+	group_bytes, err := ioutil.ReadFile(config_group)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -78,8 +82,8 @@ func main() {
 		sh      = time.Tick(sh_time)
 		running = time.Tick(running_time)
 	)
-
-	var mu = NewMailUser("etc/mail")
+	config_mail := *config_dir + "/mail"
+	var mu = NewMailUser(config_mail)
 	//重新检查具体信息并判断是否需要产生提醒
 	go check_if_warn(notify.Retry, notify.Warn)
 	go warn_print(mu, smtp_auth(mu))
@@ -88,7 +92,7 @@ func main() {
 		select {
 		case <-running:
 			for _, co := range group.Computer {
-				co.Status()
+				co.status()
 			}
 		case <-sys:
 			for _, co := range group.Computer {

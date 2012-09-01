@@ -13,7 +13,7 @@ type Computer struct {
 	Address string `json:"address"`
 	//"ignore"若为true，则跳过system信息查询
 	Ignore bool `json:"ignore"`
-	status bool
+	Status bool
 	sys    *info.System
 	tcp    []*info.Service
 	udp    []*info.Service
@@ -39,7 +39,7 @@ type Notify struct {
 }
 
 func NewNotify() *Notify {
-	var retry, warn, err = make(chan Retry), make(chan string), make(chan error)
+	var retry, warn, err = make(chan Retry), make(chan string, 10), make(chan error)
 	return &Notify{retry, warn, err}
 }
 
@@ -69,16 +69,16 @@ func readResponse(url string) []byte {
 	return b
 }
 
-func (co *Computer) Status() {
+func (co *Computer) status() {
 	_, err := http.Head(co.URI())
 	status := false
 	if err == nil {
 		status = true
 	}
-	if co.status != status {
+	if co.Status != status {
 		notify.Retry <- Retry{co.URI(), "status", status}
 	}
-	co.status = status
+	co.Status = status
 }
 
 func (co *Computer) Stat() string {
@@ -103,7 +103,7 @@ func fromjson(b []byte, v interface{}) error {
 }
 
 func (co *Computer) System() {
-	if !co.status || co.Ignore {
+	if !co.Status || co.Ignore {
 		return
 	}
 	urL := co.URI() + "/system"
@@ -124,7 +124,7 @@ func (co *Computer) System() {
 }
 
 func (co *Computer) Tcp() {
-	if !co.status {
+	if !co.Status {
 		return
 	}
 	// tcp check
@@ -142,7 +142,7 @@ func (co *Computer) Tcp() {
 }
 
 func (co *Computer) Udp() {
-	if !co.status {
+	if !co.Status {
 		return
 	}
 	// tcp check
@@ -160,7 +160,7 @@ func (co *Computer) Udp() {
 }
 
 func (co *Computer) Process() {
-	if !co.status {
+	if !co.Status {
 		return
 	}
 	urL := co.URI() + "/process"
@@ -177,7 +177,7 @@ func (co *Computer) Process() {
 }
 
 func (co *Computer) Shell() {
-	if !co.status {
+	if !co.Status {
 		return
 	}
 	urL := co.URI() + "/custom"
