@@ -3,6 +3,7 @@ background-color: #f0f0f0;
 margin: 0 1px;
 color: #222;
 text-align: center;
+width: 99%;
 }
 div#topheader {
 float: left;
@@ -45,6 +46,52 @@ padding: 10px 27px;
 border-radius:5px;
 text-shadow: 1px 2px 1px #222;
 }
-p, pre {
+header h2 {
+margin: 0;
+padding: 5px 0 5px 20px;
+border-radius:5px;
+width: auto;
+}
+section article {
+width: 100%;
+}
+div#content {
+margin-top: 5px;
+clear: both;
 text-align: left;
+}
+
+table, thead, tr, td, th {
+border-top: 1px solid #e0e0e0;
+border-bottom: 1px solid #e0e0e0;
+margin-left: 5px;
+padding-left: 10px;
+}
+/*
+.group {
+background: #a0ebf5;
+text-align: left;
+}
+*/
+.rightt {
+border-right: 1px solid #e1e1e1;
+width: 83%;
+}
+p.group {
+margin:0;
+background: #e0ebf5;
+padding-left: 10px;
+width: auto;
+}
+table {
+background:#d0d0d0;
+border-collapse: collapse;
+width: 100%;
+}
+.table_head {
+background: #909090;
+}
+.rt {
+	font-weight: 100;
+	font-size: 0.5em;
 }

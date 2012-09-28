@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="language" content="zh-cn" />
+<title>Monitoring Servers</title>
+<link type="text/css" rel="stylesheet" href="tmpl/css1.css" />
+<script src="js/jquery-1.8.2.js"></script>
+</head>
+<body>
+<div id="header">
+	<div id="topheader"><a href="/">mana Manager</a></div>
+	<nav>
+		<a href="index.html">首页</a>
+		<a href="status.html">状态</a>
+		<a href="load">负载</a>
+		<a href="about">关于</a>
+	</nav>
+</div>
+<div id="content">
+<span style="float:right; padding-top:10px;">
+<a href="/" target="_self">首页</a>
+</span>
+<section>
+<header>
+<h2>== 状态 ---</h2>
+<hr style="margin:0;background:#666;width:100%;" size=10 />
+</header>
+<article>
+<form action="" method="get">
+	<label>Group:</label>
+	<select name="group">
+		<option value="">select group</option>
+		<option value="1abcdef">1abcdef</option>
+		<option value="2abcde">2abcde</option>
+		<option value="3abcde">3abcde</option>
+	</select>
+</form>
+<p class="group">abcde: 2</p>
+<table>
+	<thead>
+		<tr class="table_head">
+			<td class="rightt">server 地址:</td>
+			<td >status</td>
+		</tr>
+	</thead>
+	<tbody>
+        <tr>
+            <td class="rightt">127.0.0.1:12345</td>
+            <td style="color:green">online</td>
+        </tr>
+        <tr>
+            <td class="rightt">192.168.1.55:12345</td>
+            <td style="color:red">down</td>
+        </tr>
+    </tbody>
+</table>
+</article>
+<section>
+</div>
+<div id="footer">
+</div>
+<script>
+$("select").change(function() {
+	var id = $(this)
+</body>
+</html>
