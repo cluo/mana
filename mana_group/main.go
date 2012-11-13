@@ -57,6 +57,8 @@ func warn_print(mu *MailUser, auth smtp.Auth) {
 	}
 }
 
+var group Group
+
 func main() {
 	if *help {
 		flag.PrintDefaults()
@@ -68,7 +70,6 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	var group Group
 	err = json.Unmarshal(group_bytes, &group)
 	if err != nil {
 		fmt.Println(err)
