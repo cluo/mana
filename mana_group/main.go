@@ -27,7 +27,7 @@ var (
 
 var (
 	help       = flag.Bool("h", false, "help")
-	config_dir = flag.String("c", "etc/mail", "config files path")
+	config_dir = flag.String("c", "etc", "config files path")
 	mail_warn  = flag.Bool("mail", false, "send mail when status changed")
 )
 
